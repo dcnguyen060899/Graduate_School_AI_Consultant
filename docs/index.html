@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AI Grad School Consulting</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <div class="container">
@@ -15,11 +16,12 @@
             <p id="welcome-message"></p>
             <span class="typing-cursor"></span>
         </div>
-        <button id="start-button" class="button">Start Consultation</button>
+        <div class="input-area">
+            <input type="text" id="user-input" placeholder="Type your message here..." style="display: none;">
+            <button id="send-button" class="button">Start Consultation</button>
+        </div>
     </div>
     
-    <!-- Include JavaScript files -->
     <script src="js/script.js"></script>
-    
 </body>
 </html>
