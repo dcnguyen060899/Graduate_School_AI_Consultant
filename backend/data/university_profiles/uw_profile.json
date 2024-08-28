@@ -1,0 +1,58 @@
+{
+    "university": "University of Washington",
+    "programs": [
+        {
+            "name": "Master of Science in Computer Science & Software Engineering",
+            "department": "School of Science, Technology, Engineering & Mathematics",
+            "requirements": {
+                "application_deadline": {
+                    "priority_deadline": "2025-02-03",
+                    "international_deadline": "2025-03-03",
+                    "domestic_deadline": "2025-05-01"
+                },
+                "degree_requirements": {
+                    "bachelor_degree": "Computer Science or closely related field",
+                    "gpa_minimum": "3.0 in the last two years of study"
+                },
+                "application_components": {
+                    "online_application": true,
+                    "application_fee": true,
+                    "unofficial_transcripts": true,
+                    "personal_statement": true,
+                    "resume_required": true,
+                    "letters_of_recommendation": "2-3 letters",
+                    "research_essay": true,
+                    "english_proficiency": true,
+                    "gre_scores": "Optional"
+                }
+            },
+            "program_structure": {
+                "duration": "Part-time or Full-time",
+                "credits_required": "46-49 credits",
+                "culminating_experience": "Thesis or Project"
+            },
+            "contact_email": "stemgrad@uw.edu",
+            "contact_phone": "425.352.5490"
+        },
+        {
+            "name": "Master of Science in Data Science",
+            "department": "Data Science Institute",
+            "requirements": {
+                "application_deadline": "January 2025 (Exact date TBA)",
+                "gpa_minimum": "3.0 in the last two years of study",
+                "essays": "Short essays (questions released in late summer 2024)",
+                "unofficial_transcripts": true,
+                "resume_required": true,
+                "letters_of_recommendation": "2 required, 3 preferred",
+                "prerequisite_skills_documentation": true,
+                "english_proficiency": true
+            },
+            "program_structure": {
+                "duration": "1.5 years full-time, 2.5 years part-time",
+                "capstone_project": "Two-quarter capstone required"
+            },
+            "contact_email": "msds@uw.edu",
+            "contact_phone": "N/A"
+        }
+    ]
+}

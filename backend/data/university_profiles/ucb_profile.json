@@ -1,0 +1,41 @@
+{
+    "university": "University of California, Berkeley",
+    "programs": [
+        {
+            "name": "Master of Science in Electrical Engineering and Computer Science",
+            "department": "Department of Electrical Engineering and Computer Sciences",
+            "requirements": {
+                "application_deadline": "2024-12-09",
+                "GRE_required": false,
+                "TOEFL_required": true,
+                "TOEFL_exemption": "If the applicant has earned a degree from an institution in a country where English is the official language of instruction, the English proficiency test (e.g., TOEFL) is not required.",
+                "statement_of_purpose": true,
+                "personal_history_statement": true,
+                "letters_of_recommendation": 3,
+                "transcripts_required": true,
+                "resume_required": true,
+                "application_fee": true
+            },
+            "duration": "2 years",
+            "contact_email": "gradadm@eecs.berkeley.edu"
+        },
+        {
+            "name": "Master of Engineering",
+            "department": "Fung Institute for Engineering Leadership",
+            "requirements": {
+                "application_deadline": "2025-01-08",
+                "GRE_required": false,
+                "TOEFL_required": true,
+                "TOEFL_exemption": "If the applicant has earned a degree from an institution in a country where English is the official language of instruction, the English proficiency test (e.g., TOEFL) is not required.",
+                "statement_of_purpose": true,
+                "personal_history_statement": true,
+                "letters_of_recommendation": 3 (2 for most departments, 3 for EECS),
+                "transcripts_required": true,
+                "resume_required": true,
+                "application_fee": true
+            },
+            "duration": "1 year",
+            "contact_email": "funginstitute@berkeley.edu"
+        }
+    ]
+}

@@ -1,0 +1,41 @@
+{
+    "university": "University of Southern California",
+    "programs": [
+        {
+            "name": "Master of Science in Applied Data Science",
+            "department": "Viterbi School of Engineering",
+            "requirements": {
+                "application_deadline": "2025-01-15",
+                "GRE_required": false,
+                "TOEFL_required": false,
+                "TOEFL_exemption": "If the applicant has earned a degree from an accredited university in North America where English is the language of instruction, the English proficiency test (e.g., TOEFL) is not required.",
+                "statement_of_purpose": true,
+                "letters_of_recommendation": 3,
+                "transcripts_required": true,
+                "resume_required": true
+            },
+            "duration": "2 years",
+            "credit_hours": 32,
+            "tuition_fees": "$60,000",
+            "contact_email": "datascience@usc.edu"
+        },
+        {
+            "name": "Master of Science in Computer Science - Scientists and Engineers",
+            "department": "Viterbi School of Engineering",
+            "requirements": {
+                "application_deadline": "2025-01-15",
+                "GRE_required": false,
+                "TOEFL_required": false,
+                "TOEFL_exemption": "If the applicant has earned a degree from an accredited university in North America where English is the language of instruction, the English proficiency test (e.g., TOEFL) is not required.",
+                "statement_of_purpose": true,
+                "letters_of_recommendation": 3,
+                "transcripts_required": true,
+                "resume_required": true
+            },
+            "duration": "2 years",
+            "credit_hours": 37,
+            "tuition_fees": "$58,000",
+            "contact_email": "csgrad@usc.edu"
+        }
+    ]
+}

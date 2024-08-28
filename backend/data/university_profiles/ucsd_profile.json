@@ -1,0 +1,39 @@
+{
+    "university": "University of California, San Diego",
+    "programs": [
+        {
+            "name": "Master of Science in Data Science",
+            "department": "Halıcıoğlu Data Science Institute",
+            "requirements": {
+                "application_deadline": "2024-12-15",
+                "GRE_required": false,
+                "TOEFL_required": true,
+                "TOEFL_exemption": "If the applicant has earned a degree from an institution where English is the sole language of instruction, the English proficiency test (e.g., TOEFL) is not required.",
+                "statement_of_purpose": true,
+                "letters_of_recommendation": 3,
+                "transcripts_required": true,
+                "resume_required": true,
+                "application_fee": true
+            },
+            "duration": "2 years",
+            "contact_email": "DSCGradAdmissions@ucsd.edu"
+        },
+        {
+            "name": "Master of Science in Computer Science",
+            "department": "Department of Computer Science and Engineering",
+            "requirements": {
+                "application_deadline": "2024-12-18",
+                "GRE_required": false,
+                "TOEFL_required": true,
+                "TOEFL_exemption": "If the applicant has earned a degree from an institution where English is the sole language of instruction, the English proficiency test (e.g., TOEFL) is not required.",
+                "statement_of_purpose": true,
+                "letters_of_recommendation": 3,
+                "transcripts_required": true,
+                "resume_required": true,
+                "application_fee": true
+            },
+            "duration": "2 years",
+            "contact_email": "csegradinfo@ucsd.edu"
+        }
+    ]
+}
