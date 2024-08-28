@@ -6,3 +6,6 @@ llama-hub
 flask-cors
 llm
 gunicorn
+langchain
+langchain-community
+langchain-openai
