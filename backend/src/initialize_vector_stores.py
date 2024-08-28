@@ -1,6 +1,9 @@
 import os
-from llama_index import SimpleDirectoryReader, VectorStoreIndex, StorageContext
-
+from llama_index.core import (
+    VectorStoreIndex,
+    SimpleDirectoryReader,
+    StorageContext,
+)
 def initialize_query_engines():
     # Directory containing the JSON files (representing university profiles)
     json_directory = os.path.join(os.path.dirname(__file__), 'data', 'university_profiles')
