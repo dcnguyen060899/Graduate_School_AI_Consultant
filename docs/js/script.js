@@ -1,6 +1,6 @@
 const welcomeMessage = "Welcome! I'm your AI consultant for graduate school applications. How can I assist you today?";
 const messageElement = document.getElementById('welcome-message');
-const sendButton = document.getElementById('send-button');
+const startButton = document.getElementById('start-button');
 const userInput = document.getElementById('user-input');
 const chatBox = document.querySelector('.chat-box');
 let charIndex = 0;
@@ -14,19 +14,16 @@ function typeMessage(message, element, callback) {
             index++;
             setTimeout(type, 50);
         } else {
+            document.querySelector('.typing-cursor').style.display = 'none';
             if (callback) callback();
         }
     }
     type();
 }
 
-window.addEventListener('load', () => {
-    typeMessage(welcomeMessage, messageElement, () => {
-        sendButton.disabled = false;
-    });
-});
+window.addEventListener('load', () => typeMessage(welcomeMessage, messageElement));
 
-sendButton.addEventListener('click', function() {
+startButton.addEventListener('click', function() {
     if (this.textContent === 'Start Consultation') {
         this.textContent = 'Send Message';
         userInput.style.display = 'block';
@@ -51,12 +48,8 @@ function sendMessage() {
         userInput.value = '';
         // Here you would typically send the message to your backend
         // For now, we'll just simulate a response
-        sendButton.disabled = true;
         setTimeout(() => {
-            typeMessage('AI: Thank you for your question. I'm processing your request...', messageElement, () => {
-                sendButton.disabled = false;
-                userInput.focus();
-            });
+            typeMessage('AI: Thank you for your question. I'm processing your request...', messageElement);
         }, 1000);
     }
 }
