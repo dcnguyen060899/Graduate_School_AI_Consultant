@@ -1,6 +1,6 @@
 import os
 from dotenv import load_dotenv
-from llama_index.llms import OpenAI
+from llama_index.llms.openai import OpenAI
 from llama_index.embeddings.openai import OpenAIEmbedding
 from llama_index.core.storage.chat_store import SimpleChatStore
 from llama_index.core.memory import ChatMemoryBuffer
