@@ -71,3 +71,22 @@ h1 {
     50% { opacity: 1; }
     100% { opacity: 0; }
 }
+
+.input-area {
+    display: flex;
+    gap: 10px;
+}
+
+#user-input {
+    flex-grow: 1;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+.button {
+    flex-shrink: 0;
+    width: auto;
+    padding: 10px 20px;
+}
