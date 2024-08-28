@@ -2,7 +2,7 @@ import os
 from llama_index import SimpleDirectoryReader, VectorStoreIndex, StorageContext
 
 # Directory containing the JSON files (representing university profiles)
-json_directory = "backend/data/university_profiles"
+json_directory = os.path.join(os.path.dirname(__file__), 'data', 'university_profiles')
 
 # List all JSON files in the directory
 json_files = [f for f in os.listdir(json_directory) if f.endswith('.json')]
