@@ -4,44 +4,42 @@ const sendButton = document.getElementById('send-button');
 
 function addMessage(message, isUser = false) {
     const messageElement = document.createElement('div');
-    messageElement.classList.add('message');
-    messageElement.classList.add(isUser ? 'user-message' : 'bot-message');
+    messageElement.className = `message ${isUser ? 'user-message' : 'ai-message'}`;
     messageElement.textContent = message;
     chatBox.appendChild(messageElement);
     chatBox.scrollTop = chatBox.scrollHeight;
 }
 
-function sendMessage() {
+function handleUserInput() {
     const message = userInput.value.trim();
     if (message) {
         addMessage(message, true);
         userInput.value = '';
+        fetchAIResponse(message);
+    }
+}
 
-        // Simulating API call
-        fetch('/chat', {
+async function fetchAIResponse(message) {
+    try {
+        const response = await fetch('/chat', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({ message: message }),
-        })
-        .then(response => response.json())
-        .then(data => {
-            addMessage(data.response);
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            addMessage('Sorry, there was an error processing your request.');
         });
+        const data = await response.json();
+        addMessage(data.response);
+    } catch (error) {
+        console.error('Error:', error);
+        addMessage('Sorry, I encountered an error. Please try again.');
     }
 }
 
-sendButton.addEventListener('click', sendMessage);
-userInput.addEventListener('keypress', function(e) {
-    if (e.key === 'Enter') {
-        sendMessage();
-    }
+sendButton.addEventListener('click', handleUserInput);
+userInput.addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') handleUserInput();
 });
 
-// Initial bot message
+// Initial message
 addMessage("Welcome! I'm your AI consultant for graduate school applications. How can I assist you today?");
