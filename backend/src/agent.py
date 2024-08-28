@@ -3,6 +3,7 @@ import openai
 from llama_index.agent.openai import OpenAIAgent
 from llama_index.llms.openai import OpenAI
 from tools import query_engine_tools
+from llm import llm, memory
 
 # Initialize the OpenAI model
 llm = OpenAI(model=os.getenv("OPENAI_API_MODEL"), temperature=0.7)
@@ -32,6 +33,7 @@ agent = OpenAIAgent.from_tools(
     """,
     tools=query_engine_tools,
     llm=llm,
+    memory=memory,
     verbose=True
 )
 
