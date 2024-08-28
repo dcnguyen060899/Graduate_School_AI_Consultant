@@ -57,21 +57,29 @@ h1 {
 }
 .button {
     flex-shrink: 0;
-    padding: 10px 20px;
+    padding: 15px;
     background-color: #3498db;
     color: white;
     text-align: center;
     text-decoration: none;
-    border-radius: 5px;
+    border-radius: 10px;
     font-weight: bold;
     border: none;
     cursor: pointer;
     transition: background-color 0.3s ease;
 }
-.button:hover:not(:disabled) {
+.button:hover {
     background-color: #2980b9;
 }
-.button:disabled {
-    background-color: #bdc3c7;
-    cursor: not-allowed;
+.typing-cursor {
+    display: inline-block;
+    width: 10px;
+    height: 20px;
+    background-color: #333;
+    animation: blink 0.7s infinite;
+}
+@keyframes blink {
+    0% { opacity: 0; }
+    50% { opacity: 1; }
+    100% { opacity: 0; }
 }
