@@ -6,7 +6,7 @@ from llama_index.core import (
 )
 def initialize_query_engines():
     # Directory containing the JSON files (representing university profiles)
-    json_directory = os.path.join(os.path.dirname(__file__), 'data', 'university_profiles')
+    json_directory = '/opt/render/project/src/backend/src/data/university_profiles'
 
     # List all JSON files in the directory
     json_files = [f for f in os.listdir(json_directory) if f.endswith('.json')]
