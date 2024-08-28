@@ -1,8 +1,11 @@
 from llama_index.core.tools import QueryEngineTool, ToolMetadata
+from initialize_vector_stores import initialize_query_engines
+
+engines = initialize_query_engines()
 
 query_engine_tools = [
   QueryEngineTool(
-      query_engine=USC_engine,
+      query_engine=engines["usc"],
       metadata=ToolMetadata(
           name="USC_engine",
           description=(
@@ -27,7 +30,7 @@ query_engine_tools = [
   ),
   
   QueryEngineTool(
-      query_engine=UW_engine,
+      query_engine=engine["uw"],
       metadata=ToolMetadata(
           name="UW_engine",
           description=(
@@ -52,7 +55,7 @@ query_engine_tools = [
   ),
   
   QueryEngineTool(
-      query_engine=UC_Berkeley_engine,
+      query_engine=engine["ucb"],
       metadata=ToolMetadata(
           name="UC_Berkeley_engine",
           description=(
@@ -77,7 +80,32 @@ query_engine_tools = [
   ),
 
   QueryEngineTool(
-      query_engine=UC_Irvine_engine,
+      query_engine=engine["uci"],
+      metadata=ToolMetadata(
+          name="UC_Irvine_engine",
+          description=(
+              "Provides detailed information about the University of California, Irvine's (UC Irvine) Master of Data Science program. "
+              "The engine returns program-specific details in JSON format, including admission requirements, deadlines, GPA requirements, GRE/TOEFL waivers, "
+              "funding opportunities, and program duration."
+              "For example:"
+                "{"
+                "  'university': 'UC Irvine',"
+                "  'program': 'Master of Data Science',"
+                "  'requirements': {"
+                "    'GPA': '3.0',"
+                "    'GRE': 'Required',"
+                "    'TOEFL': 'Waived for degrees from English-speaking countries',"
+                "    'deadline': 'February 1',"
+                "    'duration': '1.5-2 years',"
+                "    'funding': 'Available through fellowships and assistantships'"
+                "  }"
+                "}"
+          ),
+      ),
+  ),
+
+  QueryEngineTool(
+      query_engine=engine["ucsd"],
       metadata=ToolMetadata(
           name="UC_Irvine_engine",
           description=(
