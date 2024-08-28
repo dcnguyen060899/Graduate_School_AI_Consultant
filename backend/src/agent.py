@@ -2,7 +2,7 @@ import os
 import openai
 from llama_index.agent.openai import OpenAIAgent
 from llama_index.llms.openai import OpenAI
-from tools import query_engine_tools
+from tools.query_engine_tools import query_engine_tools
 from llm import llm, memory
 
 # Initialize the OpenAIAgent with the system prompt and tools
