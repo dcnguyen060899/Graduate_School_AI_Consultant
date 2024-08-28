@@ -1,0 +1,8 @@
+openai
+pydantic
+llama-index
+python-dotenv
+llama-hub
+flask-cors
+llm
+gunicorn
