@@ -5,7 +5,7 @@ from llama_index.llms.openai import OpenAI
 from tools import query_engine_tools
 
 # Initialize the OpenAI model
-llm = OpenAI(model="gpt-4o-mini", temperature=0.7)
+llm = OpenAI(model=os.getenv("OPENAI_API_MODEL"), temperature=0.7)
 
 # Initialize the OpenAIAgent with the system prompt and tools
 agent = OpenAIAgent.from_tools(
