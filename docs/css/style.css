@@ -81,3 +81,15 @@ body, html {
 .send-button:hover {
     background-color: #2980b9;
 }
+.typing-cursor {
+    display: inline-block;
+    width: 10px;
+    height: 20px;
+    background-color: #333;
+    animation: blink 0.7s infinite;
+}
+@keyframes blink {
+    0% { opacity: 0; }
+    50% { opacity: 1; }
+    100% { opacity: 0; }
+}
