@@ -35,16 +35,4 @@ By leveraging AI and natural language processing, this project aims to transform
 
 Ready to meet your new grad school application sidekick? Stay tuned for updates!
 
----
 
-## Getting Started
-
-(Coming soon)
-
-## Contributing
-
-We welcome contributions! Please see our [Contributing Guidelines](CONTRIBUTING.md) for more details.
-
-## License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
