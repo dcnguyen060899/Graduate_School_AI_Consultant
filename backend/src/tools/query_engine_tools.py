@@ -30,7 +30,7 @@ query_engine_tools = [
   ),
   
   QueryEngineTool(
-      query_engine=engine["uw"],
+      query_engine=engines["uw"],
       metadata=ToolMetadata(
           name="UW_engine",
           description=(
@@ -55,7 +55,7 @@ query_engine_tools = [
   ),
   
   QueryEngineTool(
-      query_engine=engine["ucb"],
+      query_engine=engines["ucb"],
       metadata=ToolMetadata(
           name="UC_Berkeley_engine",
           description=(
@@ -80,7 +80,7 @@ query_engine_tools = [
   ),
 
   QueryEngineTool(
-      query_engine=engine["uci"],
+      query_engine=engines["uci"],
       metadata=ToolMetadata(
           name="UC_Irvine_engine",
           description=(
@@ -105,7 +105,7 @@ query_engine_tools = [
   ),
 
   QueryEngineTool(
-      query_engine=engine["ucsd"],
+      query_engine=engines["ucsd"],
       metadata=ToolMetadata(
           name="UC_Irvine_engine",
           description=(
