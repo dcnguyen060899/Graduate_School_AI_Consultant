@@ -4,12 +4,26 @@ const sendButton = document.getElementById('send-button');
 
 function addMessage(message, isUser = false) {
     const messageElement = document.createElement('div');
-    messageElement.classList.add('message');
-    messageElement.classList.add(isUser ? 'user-message' : 'bot-message');
+    messageElement.className = `message ${isUser ? 'user-message' : 'ai-message'}`;
     chatBox.appendChild(messageElement);
     
     if (!isUser) {
-        typeMessage(message, messageElement);
+        // Typing animation for AI messages
+        const typingCursor = document.createElement('span');
+        typingCursor.className = 'typing-cursor';
+        messageElement.appendChild(typingCursor);
+
+        let i = 0;
+        const typingInterval = setInterval(() => {
+            if (i < message.length) {
+                messageElement.insertBefore(document.createTextNode(message[i]), typingCursor);
+                i++;
+            } else {
+                clearInterval(typingInterval);
+                messageElement.removeChild(typingCursor);
+            }
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }, 50);
     } else {
         messageElement.textContent = message;
     }
@@ -17,53 +31,36 @@ function addMessage(message, isUser = false) {
     chatBox.scrollTop = chatBox.scrollHeight;
 }
 
-function typeMessage(message, element) {
-    let index = 0;
-    element.classList.add('typing-indicator');
-    
-    function type() {
-        if (index < message.length) {
-            element.textContent += message[index];
-            index++;
-            setTimeout(type, 30 + Math.random() * 50); // Randomize typing speed slightly
-        } else {
-            element.classList.remove('typing-indicator');
-        }
-    }
-    
-    type();
-}
-
-function sendMessage() {
+function handleUserInput() {
     const message = userInput.value.trim();
     if (message) {
         addMessage(message, true);
         userInput.value = '';
+        fetchAIResponse(message);
+    }
+}
 
-        fetch('/chat', {
+async function fetchAIResponse(message) {
+    try {
+        const response = await fetch('/chat', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({ message: message }),
-        })
-        .then(response => response.json())
-        .then(data => {
-            addMessage(data.response);
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            addMessage('Sorry, there was an error processing your request.');
         });
+        const data = await response.json();
+        addMessage(data.response);
+    } catch (error) {
+        console.error('Error:', error);
+        addMessage('Sorry, I encountered an error. Please try again.');
     }
 }
 
-sendButton.addEventListener('click', sendMessage);
-userInput.addEventListener('keypress', function(e) {
-    if (e.key === 'Enter') {
-        sendMessage();
-    }
+sendButton.addEventListener('click', handleUserInput);
+userInput.addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') handleUserInput();
 });
 
-// Initial bot message with typing effect
+// Initial welcome message with typing animation
 addMessage("Welcome! I'm your AI consultant for graduate school applications. How can I assist you today?");
