@@ -2,6 +2,38 @@ const chatBox = document.getElementById('chat-box');
 const userInput = document.getElementById('user-input');
 const sendButton = document.getElementById('send-button');
 
+function formatAIMessage(message) {
+    // Split the message into lines
+    const lines = message.split('\n');
+    let formattedMessage = '';
+    let inList = false;
+
+    lines.forEach((line, index) => {
+        line = line.trim();
+        if (line.startsWith('- ') || line.match(/^\d+\./)) {
+            if (!inList) {
+                formattedMessage += '<ul>';
+                inList = true;
+            }
+            formattedMessage += `<li>${line.replace(/^-\s|^\d+\.\s/, '')}</li>`;
+        } else {
+            if (inList) {
+                formattedMessage += '</ul>';
+                inList = false;
+            }
+            if (line) {
+                formattedMessage += `<p>${line}</p>`;
+            }
+        }
+    });
+
+    if (inList) {
+        formattedMessage += '</ul>';
+    }
+
+    return formattedMessage;
+}
+
 function addMessage(message, isUser = false, isWelcome = false) {
     const messageElement = document.createElement('div');
     messageElement.className = `message ${isUser ? 'user-message' : 'ai-message'}`;
@@ -12,31 +44,43 @@ function addMessage(message, isUser = false, isWelcome = false) {
         typingCursor.className = 'typing-cursor';
         messageElement.appendChild(typingCursor);
 
+        const formattedMessage = formatAIMessage(message);
         let i = 0;
         const typingInterval = setInterval(() => {
-            if (i < message.length) {
-                messageElement.insertBefore(document.createTextNode(message[i]), typingCursor);
-                i++;
+            if (i < formattedMessage.length) {
+                if (formattedMessage.substr(i, 4) === '<ul>') {
+                    messageElement.innerHTML += '<ul>';
+                    i += 4;
+                } else if (formattedMessage.substr(i, 5) === '</ul>') {
+                    messageElement.innerHTML += '</ul>';
+                    i += 5;
+                } else if (formattedMessage.substr(i, 4) === '<li>') {
+                    messageElement.innerHTML += '<li>';
+                    i += 4;
+                } else if (formattedMessage.substr(i, 5) === '</li>') {
+                    messageElement.innerHTML += '</li>';
+                    i += 5;
+                } else if (formattedMessage.substr(i, 3) === '<p>') {
+                    messageElement.innerHTML += '<p>';
+                    i += 3;
+                } else if (formattedMessage.substr(i, 4) === '</p>') {
+                    messageElement.innerHTML += '</p>';
+                    i += 4;
+                } else {
+                    messageElement.lastElementChild.innerHTML += formattedMessage[i];
+                    i++;
+                }
             } else {
                 clearInterval(typingInterval);
                 messageElement.removeChild(typingCursor);
             }
             chatBox.scrollTop = chatBox.scrollHeight;
-        }, isWelcome ? 50 : 10); // Slower for welcome message, faster for chatbot responses
+        }, isWelcome ? 50 : 10);
     } else {
         messageElement.textContent = message;
     }
     
     chatBox.scrollTop = chatBox.scrollHeight;
-}
-
-function handleUserInput() {
-    const message = userInput.value.trim();
-    if (message) {
-        addMessage(message, true);
-        userInput.value = '';
-        fetchAIResponse(message);
-    }
 }
 
 async function fetchAIResponse(message) {
