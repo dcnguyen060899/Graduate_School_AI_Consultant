@@ -94,22 +94,3 @@ body, html {
     100% { opacity: 0; }
 }
 
-.ai-message {
-    background-color: #e8f4fc;
-    align-self: flex-start;
-    white-space: pre-wrap;
-    word-break: break-word;
-}
-
-.ai-message p {
-    margin: 0 0 10px 0;
-}
-
-.ai-message ul, .ai-message ol {
-    margin: 0 0 10px 0;
-    padding-left: 20px;
-}
-
-.ai-message li {
-    margin-bottom: 5px;
-}
