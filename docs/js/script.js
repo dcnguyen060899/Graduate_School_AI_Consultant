@@ -1,7 +1,9 @@
 const chatBox = document.getElementById('chat-box');
 const userInput = document.getElementById('user-input');
 const sendButton = document.getElementById('send-button');
+const apiUrl = 'https://uc-berkeley-ml-ai-capstone-work-sample.onrender.com/chat'; // Replace with your actual backend API URL
 
+// Function to add messages to the chat
 function addMessage(message, isUser = false, isWelcome = false) {
     const messageElement = document.createElement('div');
     messageElement.className = `message ${isUser ? 'user-message' : 'ai-message'}`;
@@ -30,6 +32,7 @@ function addMessage(message, isUser = false, isWelcome = false) {
     chatBox.scrollTop = chatBox.scrollHeight;
 }
 
+// Function to handle user input
 function handleUserInput() {
     const message = userInput.value.trim();
     if (message) {
@@ -39,26 +42,25 @@ function handleUserInput() {
     }
 }
 
-async function sendMessageToBot(userMessage) {
-    const response = await fetch('https://graduate-school-ai-consultant.onrender.com/chat', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ message: userMessage }),
-    });
-
-    const data = await response.json();
-    return data.response;
+// Function to fetch AI response from the backend
+async function fetchAIResponse(message) {
+    try {
+        const response = await fetch(apiUrl, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ message: message }),
+        });
+        const data = await response.json();
+        addMessage(data.response, false, false); // false for isUser, false for isWelcome
+    } catch (error) {
+        console.error('Error:', error);
+        addMessage('Sorry, I encountered an error. Please try again.');
+    }
 }
 
-document.querySelector('#chat-form').addEventListener('submit', async (event) => {
-    event.preventDefault();
-    const userMessage = document.querySelector('#user-input').value;
-    const botResponse = await sendMessageToBot(userMessage);
-    document.querySelector('#chat-output').textContent = botResponse;
-});
-
+// Event listeners for sending messages
 sendButton.addEventListener('click', handleUserInput);
 userInput.addEventListener('keypress', (e) => {
     if (e.key === 'Enter') handleUserInput();
