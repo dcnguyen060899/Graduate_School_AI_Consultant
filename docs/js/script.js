@@ -10,21 +10,31 @@ function addMessage(message, isUser = false, isWelcome = false) {
     chatBox.appendChild(messageElement);
     
     if (!isUser) {
+        const formattedMessage = formatAIMessage(message);
         const typingCursor = document.createElement('span');
         typingCursor.className = 'typing-cursor';
         messageElement.appendChild(typingCursor);
 
         let i = 0;
         const typingInterval = setInterval(() => {
-            if (i < message.length) {
-                messageElement.insertBefore(document.createTextNode(message[i]), typingCursor);
-                i++;
+            if (i < formattedMessage.length) {
+                if (formattedMessage[i] === '<') {
+                    // Find the closing '>' and insert the whole tag at once
+                    const closingIndex = formattedMessage.indexOf('>', i);
+                    if (closingIndex !== -1) {
+                        messageElement.insertAdjacentHTML('beforeend', formattedMessage.substring(i, closingIndex + 1));
+                        i = closingIndex + 1;
+                    }
+                } else {
+                    messageElement.insertAdjacentHTML('beforeend', formattedMessage[i]);
+                    i++;
+                }
             } else {
                 clearInterval(typingInterval);
                 messageElement.removeChild(typingCursor);
             }
             chatBox.scrollTop = chatBox.scrollHeight;
-        }, isWelcome ? 50 : 10); // Slower for welcome message, faster for chatbot responses
+        }, isWelcome ? 50 : 10);
     } else {
         messageElement.textContent = message;
     }
@@ -32,15 +42,6 @@ function addMessage(message, isUser = false, isWelcome = false) {
     chatBox.scrollTop = chatBox.scrollHeight;
 }
 
-// Function to handle user input
-function handleUserInput() {
-    const message = userInput.value.trim();
-    if (message) {
-        addMessage(message, true);
-        userInput.value = '';
-        fetchAIResponse(message);
-    }
-}
 
 // Function to fetch AI response from the backend
 async function fetchAIResponse(message) {
@@ -65,6 +66,27 @@ sendButton.addEventListener('click', handleUserInput);
 userInput.addEventListener('keypress', (e) => {
     if (e.key === 'Enter') handleUserInput();
 });
+
+function formatAIMessage(message) {
+    // Split into paragraphs
+    let paragraphs = message.split('\n\n');
+    
+    // Process each paragraph
+    paragraphs = paragraphs.map(para => {
+        // Convert numbered lists to bullet points
+        para = para.replace(/^\d+\.\s/gm, '• ');
+        
+        // Highlight key phrases
+        para = para.replace(/(Application Deadline|GRE|TOEFL|Statement of Purpose|Letters of Recommendation|Transcripts|Resume)/g, '<strong>$1</strong>');
+        
+        // Convert lines starting with dash or asterisk to bullet points
+        para = para.replace(/^[-*]\s/gm, '• ');
+        
+        return `<p>${para}</p>`;
+    });
+    
+    return paragraphs.join('');
+}
 
 // Initial welcome message with typing animation
 addMessage("Welcome! I'm your AI consultant for graduate school applications. How can I assist you today?", false, true);
