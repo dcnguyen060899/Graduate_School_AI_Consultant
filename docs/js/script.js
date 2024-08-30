@@ -2,38 +2,6 @@ const chatBox = document.getElementById('chat-box');
 const userInput = document.getElementById('user-input');
 const sendButton = document.getElementById('send-button');
 
-function formatAIMessage(message) {
-    // Split the message into lines
-    const lines = message.split('\n');
-    let formattedMessage = '';
-    let inList = false;
-
-    lines.forEach((line, index) => {
-        line = line.trim();
-        if (line.startsWith('- ') || line.match(/^\d+\./)) {
-            if (!inList) {
-                formattedMessage += '<ul>';
-                inList = true;
-            }
-            formattedMessage += `<li>${line.replace(/^-\s|^\d+\.\s/, '')}</li>`;
-        } else {
-            if (inList) {
-                formattedMessage += '</ul>';
-                inList = false;
-            }
-            if (line) {
-                formattedMessage += `<p>${line}</p>`;
-            }
-        }
-    });
-
-    if (inList) {
-        formattedMessage += '</ul>';
-    }
-
-    return formattedMessage;
-}
-
 function addMessage(message, isUser = false, isWelcome = false) {
     const messageElement = document.createElement('div');
     messageElement.className = `message ${isUser ? 'user-message' : 'ai-message'}`;
@@ -44,38 +12,17 @@ function addMessage(message, isUser = false, isWelcome = false) {
         typingCursor.className = 'typing-cursor';
         messageElement.appendChild(typingCursor);
 
-        const formattedMessage = formatAIMessage(message);
         let i = 0;
         const typingInterval = setInterval(() => {
-            if (i < formattedMessage.length) {
-                if (formattedMessage.substr(i, 4) === '<ul>') {
-                    messageElement.innerHTML += '<ul>';
-                    i += 4;
-                } else if (formattedMessage.substr(i, 5) === '</ul>') {
-                    messageElement.innerHTML += '</ul>';
-                    i += 5;
-                } else if (formattedMessage.substr(i, 4) === '<li>') {
-                    messageElement.innerHTML += '<li>';
-                    i += 4;
-                } else if (formattedMessage.substr(i, 5) === '</li>') {
-                    messageElement.innerHTML += '</li>';
-                    i += 5;
-                } else if (formattedMessage.substr(i, 3) === '<p>') {
-                    messageElement.innerHTML += '<p>';
-                    i += 3;
-                } else if (formattedMessage.substr(i, 4) === '</p>') {
-                    messageElement.innerHTML += '</p>';
-                    i += 4;
-                } else {
-                    messageElement.lastElementChild.innerHTML += formattedMessage[i];
-                    i++;
-                }
+            if (i < message.length) {
+                messageElement.insertBefore(document.createTextNode(message[i]), typingCursor);
+                i++;
             } else {
                 clearInterval(typingInterval);
                 messageElement.removeChild(typingCursor);
             }
             chatBox.scrollTop = chatBox.scrollHeight;
-        }, isWelcome ? 50 : 10);
+        }, isWelcome ? 50 : 10); // Slower for welcome message, faster for chatbot responses
     } else {
         messageElement.textContent = message;
     }
@@ -83,22 +30,34 @@ function addMessage(message, isUser = false, isWelcome = false) {
     chatBox.scrollTop = chatBox.scrollHeight;
 }
 
-async function fetchAIResponse(message) {
-    try {
-        const response = await fetch('/chat', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ message: message }),
-        });
-        const data = await response.json();
-        addMessage(data.response, false, false); // false for isUser, false for isWelcome
-    } catch (error) {
-        console.error('Error:', error);
-        addMessage('Sorry, I encountered an error. Please try again.');
+function handleUserInput() {
+    const message = userInput.value.trim();
+    if (message) {
+        addMessage(message, true);
+        userInput.value = '';
+        fetchAIResponse(message);
     }
 }
+
+async function sendMessageToBot(userMessage) {
+    const response = await fetch('https://graduate-school-ai-consultant.onrender.com/chat', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ message: userMessage }),
+    });
+
+    const data = await response.json();
+    return data.response;
+}
+
+document.querySelector('#chat-form').addEventListener('submit', async (event) => {
+    event.preventDefault();
+    const userMessage = document.querySelector('#user-input').value;
+    const botResponse = await sendMessageToBot(userMessage);
+    document.querySelector('#chat-output').textContent = botResponse;
+});
 
 sendButton.addEventListener('click', handleUserInput);
 userInput.addEventListener('keypress', (e) => {
