@@ -61,29 +61,24 @@ document.addEventListener('DOMContentLoaded', function() {
         chatBox.appendChild(messageElement);
         
         if (!isUser) {
-            const formattedMessage = formatMessage(message);
             const typingCursor = document.createElement('span');
             typingCursor.className = 'typing-cursor';
             messageElement.appendChild(typingCursor);
             
             if (isWelcome) {
-                messageElement.innerHTML = formattedMessage;
+                messageElement.innerHTML = formatMessage(message);
             } else {
-                const typingCursor = document.createElement('span');
-                typingCursor.className = 'typing-cursor';
-                messageElement.appendChild(typingCursor);
                 let i = 0;
-                
                 const typingInterval = setInterval(() => {
-                    if (i < formattedMessage.length) {
-                        messageElement.innerHTML = formattedMessage.substring(0, i) + typingCursor.outerHTML;
+                    if (i < message.length) {
+                        messageElement.innerHTML = formatMessage(message.substring(0, i)) + typingCursor.outerHTML;
                         i++;
                     } else {
                         clearInterval(typingInterval);
-                        messageElement.innerHTML = formattedMessage;
+                        messageElement.innerHTML = formatMessage(message);
                     }
                     chatBox.scrollTop = chatBox.scrollHeight;
-                }, isWelcome ? 50 : 10);
+                }, 10);
             }
         } else {
             messageElement.textContent = message;
