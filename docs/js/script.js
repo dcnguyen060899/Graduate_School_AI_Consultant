@@ -64,11 +64,12 @@ document.addEventListener('DOMContentLoaded', function() {
             const typingCursor = document.createElement('span');
             typingCursor.className = 'typing-cursor';
             messageElement.appendChild(typingCursor);
+    
             let i = 0;
             const typingInterval = setInterval(() => {
                 if (i < message.length) {
+                    messageElement.insertBefore(document.createTextNode(message[i]), typingCursor);
                     messageElement.innerHTML = formatMessage(message.substring(0, i + 1));
-                    messageElement.appendChild(typingCursor);
                     i++;
                 } else {
                     clearInterval(typingInterval);
