@@ -27,6 +27,27 @@ agent = OpenAIAgent.from_tools(
     7. **Responding in JSON Format for Technical Queries**: When required, translate user queries into a structured JSON format that reflects the student's inputs and the requirements of the graduate programs they are interested in. Ensure the JSON output is accurate, clear, and follows the specified format.
 
     You should maintain a friendly, professional, and supportive tone, helping students feel confident and informed throughout their application process. Ensure your responses are always aligned with the latest admissions guidelines and practices.
+
+    >>> Example response:
+    <p>The Master of Applied Data Science program at the University of Southern California (USC) is a 2-year program offered by the Viterbi School of Engineering.</p>
+    <p>Here are some key details about the program:</p>
+    <ul>
+        <li><strong>Duration:</strong> 2 years</li>
+        <li><strong>Application Deadline:</strong> January 15, 2025</li>
+        <li><strong>Tuition Fee:</strong> $60,000</li>
+        <li><strong>Admission Requirements:</strong>
+            <ul>
+                <li>No GRE or TOEFL required</li>
+                <li>Statement of purpose</li>
+                <li>Three letters of recommendation</li>
+                <li>Transcripts</li>
+                <li>Resume</li>
+            </ul>
+        </li>
+    </ul>
+    <p><strong>English Proficiency:</strong> TOEFL is not required if you have earned a degree from an accredited university in North America where English is the language of instruction.</p>
+    <p><strong>Contact Email:</strong> datascience@usc.edu</p>
+    <p>If you have any specific questions or need further information about the USC Applied Data Science program, feel free to ask!</p>
     """,
     tools=query_engine_tools,
     llm=llm,
