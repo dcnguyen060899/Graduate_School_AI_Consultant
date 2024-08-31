@@ -4,11 +4,6 @@ document.addEventListener('DOMContentLoaded', function() {
     const sendButton = document.getElementById('send-button');
     const apiUrl = 'https://graduate-school-ai-consultant.onrender.com/chat'; // Replace with your actual backend API URL
 
-    if (!chatBox || !userInput || !sendButton) {
-        console.error('One or more required elements not found');
-        return;
-    }
-
 
     // Function to add messages to the chat
     function addMessage(message, isUser = false, isWelcome = false) {
@@ -39,7 +34,6 @@ document.addEventListener('DOMContentLoaded', function() {
         chatBox.scrollTop = chatBox.scrollHeight;
     }
     
-    
     // Function to fetch AI response from the backend
     async function fetchAIResponse(message) {
         try {
@@ -64,48 +58,6 @@ document.addEventListener('DOMContentLoaded', function() {
         if (e.key === 'Enter') handleUserInput();
     });
     
-    function formatAIResponse(message) {
-        const formattedElements = [];
-        
-        // Split the message into paragraphs
-        const paragraphs = message.split('\n\n');
-        
-        paragraphs.forEach((paragraph, index) => {
-            if (paragraph.includes(':')) {
-                // Handle key-value pairs or lists
-                const [key, value] = paragraph.split(':');
-                const keyElement = document.createElement('strong');
-                keyElement.textContent = key + ':';
-                formattedElements.push(keyElement);
-                formattedElements.push(document.createElement('br'));
-                
-                // Check if the value contains list items
-                if (value.includes('-')) {
-                    const ulElement = document.createElement('ul');
-                    value.split('-').filter(item => item.trim()).forEach(item => {
-                        const liElement = document.createElement('li');
-                        liElement.textContent = item.trim();
-                        ulElement.appendChild(liElement);
-                    });
-                    formattedElements.push(ulElement);
-                } else {
-                    formattedElements.push(document.createTextNode(value.trim()));
-                }
-            } else {
-                // Regular paragraph
-                const pElement = document.createElement('p');
-                pElement.textContent = paragraph;
-                formattedElements.push(pElement);
-            }
-            
-            // Add spacing between paragraphs
-            if (index < paragraphs.length - 1) {
-                formattedElements.push(document.createElement('br'));
-            }
-        });
-        
-        return formattedElements;
-    }
     
     // Initial welcome message with typing animation
     addMessage("Welcome! I'm your AI consultant for graduate school applications. How can I assist you today?", false, true);
