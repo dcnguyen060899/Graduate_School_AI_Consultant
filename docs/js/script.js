@@ -9,7 +9,6 @@ document.addEventListener('DOMContentLoaded', function() {
         let formattedHTML = '';
         let inList = false;
         let inSubList = false;
-        let lastMainItem = '';
     
         function formatBold(text) {
             return text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
@@ -17,32 +16,26 @@ document.addEventListener('DOMContentLoaded', function() {
     
         lines.forEach(line => {
             line = line.trim();
-            if (line.startsWith('• ')) {
+            if (line.startsWith('- ')) {
                 if (!inList) {
                     formattedHTML += '<ul>';
                     inList = true;
                 }
-                const item = line.substring(2);
-                if (item.endsWith(':')) {
-                    lastMainItem = item;
-                    formattedHTML += `<li>${formatBold(item)}`;
+                
+                if (line.includes('Admission Requirements:')) {
                     inSubList = true;
-                    formattedHTML += '<ul>';
-                } else if (inSubList && lastMainItem === 'Admission Requirements:') {
-                    formattedHTML += `<li>${formatBold(item)}</li>`;
+                    formattedHTML += `<li>${formatBold(line.substring(2))}<ul>`;
+                } else if (inSubList) {
+                    formattedHTML += `<li>${formatBold(line.substring(2))}</li>`;
                 } else {
-                    if (inSubList) {
-                        formattedHTML += '</ul></li>';
-                        inSubList = false;
-                    }
-                    formattedHTML += `<li>${formatBold(item)}</li>`;
+                    formattedHTML += `<li>${formatBold(line.substring(2))}</li>`;
                 }
             } else {
+                if (inSubList) {
+                    formattedHTML += '</ul></li>';
+                    inSubList = false;
+                }
                 if (inList) {
-                    if (inSubList) {
-                        formattedHTML += '</ul></li>';
-                        inSubList = false;
-                    }
                     formattedHTML += '</ul>';
                     inList = false;
                 }
@@ -52,10 +45,10 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     
+        if (inSubList) {
+            formattedHTML += '</ul></li>';
+        }
         if (inList) {
-            if (inSubList) {
-                formattedHTML += '</ul></li>';
-            }
             formattedHTML += '</ul>';
         }
     
