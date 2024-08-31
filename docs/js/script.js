@@ -61,21 +61,22 @@ document.addEventListener('DOMContentLoaded', function() {
         chatBox.appendChild(messageElement);
         
         if (!isUser) {
-            const typingCursor = document.createElement('span');
-            typingCursor.className = 'typing-cursor';
-            messageElement.appendChild(typingCursor);
-            
+            let formattedMessage = '';
             let i = 0;
             const typingInterval = setInterval(() => {
                 if (i < message.length) {
-                    messageElement.innerHTML = formatMessage(message.substring(0, i)) + typingCursor.outerHTML;
+                    formattedMessage += message[i];
+                    messageElement.innerHTML = formatMessage(formattedMessage);
+                    const typingCursor = document.createElement('span');
+                    typingCursor.className = 'typing-cursor';
+                    messageElement.appendChild(typingCursor);
                     i++;
                 } else {
                     clearInterval(typingInterval);
-                    messageElement.innerHTML = formatMessage(message);
+                    messageElement.innerHTML = formatMessage(formattedMessage);
                 }
                 chatBox.scrollTop = chatBox.scrollHeight;
-            }, isWelcome ? 50 : 10); // Slower for welcome message, faster for other responses
+            }, isWelcome ? 50 : 10); // Slower for welcome message, faster for chatbot responses
         } else {
             messageElement.textContent = message;
         }
