@@ -8,6 +8,8 @@ document.addEventListener('DOMContentLoaded', function() {
         const lines = message.split('\n');
         let formattedHTML = '';
         let inList = false;
+        let inSubList = false;
+        let lastMainItem = '';
     
         function formatBold(text) {
             return text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
@@ -15,19 +17,35 @@ document.addEventListener('DOMContentLoaded', function() {
     
         lines.forEach(line => {
             line = line.trim();
-            if (line.startsWith('- ')) {
-                // List items
+            if (line.startsWith('• ')) {
                 if (!inList) {
                     formattedHTML += '<ul>';
                     inList = true;
                 }
-                formattedHTML += `<li>${formatBold(line.substring(2))}</li>`;
+                const item = line.substring(2);
+                if (item.endsWith(':')) {
+                    lastMainItem = item;
+                    formattedHTML += `<li>${formatBold(item)}`;
+                    inSubList = true;
+                    formattedHTML += '<ul>';
+                } else if (inSubList && lastMainItem === 'Admission Requirements:') {
+                    formattedHTML += `<li>${formatBold(item)}</li>`;
+                } else {
+                    if (inSubList) {
+                        formattedHTML += '</ul></li>';
+                        inSubList = false;
+                    }
+                    formattedHTML += `<li>${formatBold(item)}</li>`;
+                }
             } else {
                 if (inList) {
+                    if (inSubList) {
+                        formattedHTML += '</ul></li>';
+                        inSubList = false;
+                    }
                     formattedHTML += '</ul>';
                     inList = false;
                 }
-                // Regular paragraphs
                 if (line) {
                     formattedHTML += `<p>${formatBold(line)}</p>`;
                 }
@@ -35,6 +53,9 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     
         if (inList) {
+            if (inSubList) {
+                formattedHTML += '</ul></li>';
+            }
             formattedHTML += '</ul>';
         }
     
