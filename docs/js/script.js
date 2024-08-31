@@ -4,8 +4,6 @@ document.addEventListener('DOMContentLoaded', function() {
     const sendButton = document.getElementById('send-button');
     const apiUrl = 'https://graduate-school-ai-consultant.onrender.com/chat'; // Replace with your actual backend API URL
 
-
-    // Function to add messages to the chat
     function addMessage(message, isUser = false, isWelcome = false) {
         const messageElement = document.createElement('div');
         messageElement.className = `message ${isUser ? 'user-message' : 'ai-message'}`;
@@ -15,7 +13,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const typingCursor = document.createElement('span');
             typingCursor.className = 'typing-cursor';
             messageElement.appendChild(typingCursor);
-    
+
             let i = 0;
             const typingInterval = setInterval(() => {
                 if (i < message.length) {
@@ -33,8 +31,16 @@ document.addEventListener('DOMContentLoaded', function() {
         
         chatBox.scrollTop = chatBox.scrollHeight;
     }
-    
-    // Function to fetch AI response from the backend
+
+    function handleUserInput() {
+        const message = userInput.value.trim();
+        if (message) {
+            addMessage(message, true);
+            userInput.value = '';
+            fetchAIResponse(message);
+        }
+    }
+
     async function fetchAIResponse(message) {
         try {
             const response = await fetch(apiUrl, {
@@ -51,14 +57,12 @@ document.addEventListener('DOMContentLoaded', function() {
             addMessage('Sorry, I encountered an error. Please try again.');
         }
     }
-    
-    // Event listeners for sending messages
+
     sendButton.addEventListener('click', handleUserInput);
     userInput.addEventListener('keypress', (e) => {
         if (e.key === 'Enter') handleUserInput();
     });
-    
-    
+
     // Initial welcome message with typing animation
     addMessage("Welcome! I'm your AI consultant for graduate school applications. How can I assist you today?", false, true);
 });
