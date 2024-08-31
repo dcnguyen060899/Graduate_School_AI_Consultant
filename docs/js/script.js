@@ -62,6 +62,10 @@ document.addEventListener('DOMContentLoaded', function() {
         
         if (!isUser) {
             const formattedMessage = formatMessage(message);
+            const typingCursor = document.createElement('span');
+            typingCursor.className = 'typing-cursor';
+            messageElement.appendChild(typingCursor);
+            
             if (isWelcome) {
                 messageElement.innerHTML = formattedMessage;
             } else {
