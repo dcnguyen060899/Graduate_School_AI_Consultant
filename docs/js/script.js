@@ -14,21 +14,11 @@ function addMessage(message, isUser = false, isWelcome = false) {
         typingCursor.className = 'typing-cursor';
         messageElement.appendChild(typingCursor);
 
-        const structuredMessage = parseAIMessage(message);
         let i = 0;
         const typingInterval = setInterval(() => {
-            if (i < structuredMessage.length) {
-                if (structuredMessage[i] === '<') {
-                    // Find the closing '>' and insert the whole tag at once
-                    const tagEnd = structuredMessage.indexOf('>', i);
-                    if (tagEnd !== -1) {
-                        messageElement.insertAdjacentHTML('beforeend', structuredMessage.substring(i, tagEnd + 1));
-                        i = tagEnd + 1;
-                    }
-                } else {
-                    messageElement.insertAdjacentText('beforeend', structuredMessage[i]);
-                    i++;
-                }
+            if (i < message.length) {
+                messageElement.insertBefore(document.createTextNode(message[i]), typingCursor);
+                i++;
             } else {
                 clearInterval(typingInterval);
                 messageElement.removeChild(typingCursor);
@@ -67,41 +57,47 @@ userInput.addEventListener('keypress', (e) => {
     if (e.key === 'Enter') handleUserInput();
 });
 
-function parseAIMessage(message) {
-    // Split the message into paragraphs
-    const paragraphs = message.split('\n').filter(p => p.trim() !== '');
+function formatAIResponse(message) {
+    const formattedElements = [];
     
-    let structuredHTML = '';
-    let inList = false;
-
-    paragraphs.forEach(paragraph => {
-        if (paragraph.startsWith('1.') || paragraph.startsWith('•')) {
-            if (!inList) {
-                structuredHTML += '<ul>';
-                inList = true;
-            }
-            structuredHTML += `<li>${paragraph.substring(paragraph.indexOf(' ') + 1)}</li>`;
-        } else {
-            if (inList) {
-                structuredHTML += '</ul>';
-                inList = false;
-            }
-            if (paragraph.toLowerCase().includes('contact')) {
-                structuredHTML += `<p class="contact-info">${paragraph}</p>`;
+    // Split the message into paragraphs
+    const paragraphs = message.split('\n\n');
+    
+    paragraphs.forEach((paragraph, index) => {
+        if (paragraph.includes(':')) {
+            // Handle key-value pairs or lists
+            const [key, value] = paragraph.split(':');
+            const keyElement = document.createElement('strong');
+            keyElement.textContent = key + ':';
+            formattedElements.push(keyElement);
+            formattedElements.push(document.createElement('br'));
+            
+            // Check if the value contains list items
+            if (value.includes('-')) {
+                const ulElement = document.createElement('ul');
+                value.split('-').filter(item => item.trim()).forEach(item => {
+                    const liElement = document.createElement('li');
+                    liElement.textContent = item.trim();
+                    ulElement.appendChild(liElement);
+                });
+                formattedElements.push(ulElement);
             } else {
-                structuredHTML += `<p>${paragraph}</p>`;
+                formattedElements.push(document.createTextNode(value.trim()));
             }
+        } else {
+            // Regular paragraph
+            const pElement = document.createElement('p');
+            pElement.textContent = paragraph;
+            formattedElements.push(pElement);
+        }
+        
+        // Add spacing between paragraphs
+        if (index < paragraphs.length - 1) {
+            formattedElements.push(document.createElement('br'));
         }
     });
-
-    if (inList) {
-        structuredHTML += '</ul>';
-    }
-
-    // Add some basic formatting
-    structuredHTML = structuredHTML.replace(/(\w+:)/g, '<strong>$1</strong>');
-
-    return structuredHTML;
+    
+    return formattedElements;
 }
 
 // Initial welcome message with typing animation
