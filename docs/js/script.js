@@ -4,27 +4,68 @@ document.addEventListener('DOMContentLoaded', function() {
     const sendButton = document.getElementById('send-button');
     const apiUrl = 'https://graduate-school-ai-consultant.onrender.com/chat'; // Replace with your actual backend API URL
 
+    function formatMessage(message) {
+        // Split the message into lines
+        const lines = message.split('\n');
+        let formattedHTML = '';
+        let inList = false;
+
+        lines.forEach(line => {
+            line = line.trim();
+            if (line.startsWith('**') && line.endsWith('**')) {
+                // Headers
+                formattedHTML += `<h4>${line.replace(/\*\*/g, '')}</h4>`;
+            } else if (line.startsWith('- ')) {
+                // List items
+                if (!inList) {
+                    formattedHTML += '<ul>';
+                    inList = true;
+                }
+                formattedHTML += `<li>${line.substring(2)}</li>`;
+            } else {
+                if (inList) {
+                    formattedHTML += '</ul>';
+                    inList = false;
+                }
+                // Regular paragraphs
+                if (line) {
+                    formattedHTML += `<p>${line}</p>`;
+                }
+            }
+        });
+
+        if (inList) {
+            formattedHTML += '</ul>';
+        }
+
+        return formattedHTML;
+    }
+    
     function addMessage(message, isUser = false, isWelcome = false) {
         const messageElement = document.createElement('div');
         messageElement.className = `message ${isUser ? 'user-message' : 'ai-message'}`;
         chatBox.appendChild(messageElement);
         
         if (!isUser) {
-            const typingCursor = document.createElement('span');
-            typingCursor.className = 'typing-cursor';
-            messageElement.appendChild(typingCursor);
-
-            let i = 0;
-            const typingInterval = setInterval(() => {
-                if (i < message.length) {
-                    messageElement.insertBefore(document.createTextNode(message[i]), typingCursor);
-                    i++;
-                } else {
-                    clearInterval(typingInterval);
-                    messageElement.removeChild(typingCursor);
-                }
-                chatBox.scrollTop = chatBox.scrollHeight;
-            }, isWelcome ? 50 : 10); // Slower for welcome message, faster for chatbot responses
+            const formattedMessage = formatMessage(message);
+            if (isWelcome) {
+                messageElement.innerHTML = formattedMessage;
+            } else {
+                const typingCursor = document.createElement('span');
+                typingCursor.className = 'typing-cursor';
+                messageElement.appendChild(typingCursor);
+                let i = 0;
+                const typingInterval = setInterval(() => {
+                    if (i < formattedMessage.length) {
+                        messageElement.innerHTML = formattedMessage.substring(0, i) + typingCursor.outerHTML;
+                        i++;
+                    } else {
+                        clearInterval(typingInterval);
+                        messageElement.innerHTML = formattedMessage;
+                    }
+                    chatBox.scrollTop = chatBox.scrollHeight;
+                }, 10);
+            }
         } else {
             messageElement.textContent = message;
         }
