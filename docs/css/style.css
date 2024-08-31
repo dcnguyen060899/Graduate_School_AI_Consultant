@@ -94,20 +94,29 @@ body, html {
     100% { opacity: 0; }
 }
 
-.ai-message p {
-    margin-bottom: 10px;
-}
-
-.ai-message strong {
-    color: #2c3e50;
-    font-weight: bold;
+.ai-message {
+    background-color: #e8f4fc;
+    align-self: flex-start;
 }
 
 .ai-message ul {
+    margin: 10px 0;
     padding-left: 20px;
-    margin-bottom: 10px;
 }
 
 .ai-message li {
     margin-bottom: 5px;
+}
+
+.ai-message p {
+    margin: 0 0 10px 0;
+}
+
+.ai-message strong {
+    font-weight: 600;
+}
+
+.ai-message .contact-info {
+    font-style: italic;
+    margin-top: 10px;
 }
