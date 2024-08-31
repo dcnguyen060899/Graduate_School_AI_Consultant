@@ -79,7 +79,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         messageElement.innerHTML = formattedMessage;
                     }
                     chatBox.scrollTop = chatBox.scrollHeight;
-                }, 10);
+                }, isWelcome ? 50 : 10);
             }
         } else {
             messageElement.textContent = message;
