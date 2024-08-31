@@ -64,22 +64,18 @@ document.addEventListener('DOMContentLoaded', function() {
             const typingCursor = document.createElement('span');
             typingCursor.className = 'typing-cursor';
             messageElement.appendChild(typingCursor);
-            
-            if (isWelcome) {
-                messageElement.innerHTML = formatMessage(message);
-            } else {
-                let i = 0;
-                const typingInterval = setInterval(() => {
-                    if (i < message.length) {
-                        messageElement.innerHTML = formatMessage(message.substring(0, i)) + typingCursor.outerHTML;
-                        i++;
-                    } else {
-                        clearInterval(typingInterval);
-                        messageElement.innerHTML = formatMessage(message);
-                    }
-                    chatBox.scrollTop = chatBox.scrollHeight;
-                }, 10);
-            }
+            let i = 0;
+            const typingInterval = setInterval(() => {
+                if (i < message.length) {
+                    messageElement.innerHTML = formatMessage(message.substring(0, i + 1));
+                    messageElement.appendChild(typingCursor);
+                    i++;
+                } else {
+                    clearInterval(typingInterval);
+                    messageElement.removeChild(typingCursor);
+                }
+                chatBox.scrollTop = chatBox.scrollHeight;
+            }, isWelcome ? 50 : 10); // Slower for welcome message, faster for chatbot responses
         } else {
             messageElement.textContent = message;
         }
