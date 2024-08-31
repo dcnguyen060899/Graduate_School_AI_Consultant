@@ -5,23 +5,23 @@ document.addEventListener('DOMContentLoaded', function() {
     const apiUrl = 'https://graduate-school-ai-consultant.onrender.com/chat'; // Replace with your actual backend API URL
 
     function formatMessage(message) {
-        // Split the message into lines
         const lines = message.split('\n');
         let formattedHTML = '';
         let inList = false;
-
+    
+        function formatBold(text) {
+            return text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+        }
+    
         lines.forEach(line => {
             line = line.trim();
-            if (line.startsWith('**') && line.endsWith('**')) {
-                // Headers
-                formattedHTML += `<h4>${line.replace(/\*\*/g, '')}</h4>`;
-            } else if (line.startsWith('- ')) {
+            if (line.startsWith('- ')) {
                 // List items
                 if (!inList) {
                     formattedHTML += '<ul>';
                     inList = true;
                 }
-                formattedHTML += `<li>${line.substring(2)}</li>`;
+                formattedHTML += `<li>${formatBold(line.substring(2))}</li>`;
             } else {
                 if (inList) {
                     formattedHTML += '</ul>';
@@ -29,15 +29,15 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
                 // Regular paragraphs
                 if (line) {
-                    formattedHTML += `<p>${line}</p>`;
+                    formattedHTML += `<p>${formatBold(line)}</p>`;
                 }
             }
         });
-
+    
         if (inList) {
             formattedHTML += '</ul>';
         }
-
+    
         return formattedHTML;
     }
     
@@ -55,6 +55,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 typingCursor.className = 'typing-cursor';
                 messageElement.appendChild(typingCursor);
                 let i = 0;
+                
+                messageElement.innerHTML = formattedMessage.substring(0, i) + typingCursor.outerHTML;
+                
                 const typingInterval = setInterval(() => {
                     if (i < formattedMessage.length) {
                         messageElement.innerHTML = formattedMessage.substring(0, i) + typingCursor.outerHTML;
