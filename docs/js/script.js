@@ -10,23 +10,23 @@ function addMessage(message, isUser = false, isWelcome = false) {
     chatBox.appendChild(messageElement);
     
     if (!isUser) {
-        const formattedMessage = formatAIMessage(message);
         const typingCursor = document.createElement('span');
         typingCursor.className = 'typing-cursor';
         messageElement.appendChild(typingCursor);
 
+        const structuredMessage = parseAIMessage(message);
         let i = 0;
         const typingInterval = setInterval(() => {
-            if (i < formattedMessage.length) {
-                if (formattedMessage[i] === '<') {
+            if (i < structuredMessage.length) {
+                if (structuredMessage[i] === '<') {
                     // Find the closing '>' and insert the whole tag at once
-                    const closingIndex = formattedMessage.indexOf('>', i);
-                    if (closingIndex !== -1) {
-                        messageElement.insertAdjacentHTML('beforeend', formattedMessage.substring(i, closingIndex + 1));
-                        i = closingIndex + 1;
+                    const tagEnd = structuredMessage.indexOf('>', i);
+                    if (tagEnd !== -1) {
+                        messageElement.insertAdjacentHTML('beforeend', structuredMessage.substring(i, tagEnd + 1));
+                        i = tagEnd + 1;
                     }
                 } else {
-                    messageElement.insertAdjacentHTML('beforeend', formattedMessage[i]);
+                    messageElement.insertAdjacentText('beforeend', structuredMessage[i]);
                     i++;
                 }
             } else {
@@ -34,7 +34,7 @@ function addMessage(message, isUser = false, isWelcome = false) {
                 messageElement.removeChild(typingCursor);
             }
             chatBox.scrollTop = chatBox.scrollHeight;
-        }, isWelcome ? 50 : 10);
+        }, isWelcome ? 50 : 10); // Slower for welcome message, faster for chatbot responses
     } else {
         messageElement.textContent = message;
     }
@@ -67,25 +67,41 @@ userInput.addEventListener('keypress', (e) => {
     if (e.key === 'Enter') handleUserInput();
 });
 
-function formatAIMessage(message) {
-    // Split into paragraphs
-    let paragraphs = message.split('\n\n');
+function parseAIMessage(message) {
+    // Split the message into paragraphs
+    const paragraphs = message.split('\n').filter(p => p.trim() !== '');
     
-    // Process each paragraph
-    paragraphs = paragraphs.map(para => {
-        // Convert numbered lists to bullet points
-        para = para.replace(/^\d+\.\s/gm, '• ');
-        
-        // Highlight key phrases
-        para = para.replace(/(Application Deadline|GRE|TOEFL|Statement of Purpose|Letters of Recommendation|Transcripts|Resume)/g, '<strong>$1</strong>');
-        
-        // Convert lines starting with dash or asterisk to bullet points
-        para = para.replace(/^[-*]\s/gm, '• ');
-        
-        return `<p>${para}</p>`;
+    let structuredHTML = '';
+    let inList = false;
+
+    paragraphs.forEach(paragraph => {
+        if (paragraph.startsWith('1.') || paragraph.startsWith('•')) {
+            if (!inList) {
+                structuredHTML += '<ul>';
+                inList = true;
+            }
+            structuredHTML += `<li>${paragraph.substring(paragraph.indexOf(' ') + 1)}</li>`;
+        } else {
+            if (inList) {
+                structuredHTML += '</ul>';
+                inList = false;
+            }
+            if (paragraph.toLowerCase().includes('contact')) {
+                structuredHTML += `<p class="contact-info">${paragraph}</p>`;
+            } else {
+                structuredHTML += `<p>${paragraph}</p>`;
+            }
+        }
     });
-    
-    return paragraphs.join('');
+
+    if (inList) {
+        structuredHTML += '</ul>';
+    }
+
+    // Add some basic formatting
+    structuredHTML = structuredHTML.replace(/(\w+:)/g, '<strong>$1</strong>');
+
+    return structuredHTML;
 }
 
 // Initial welcome message with typing animation
