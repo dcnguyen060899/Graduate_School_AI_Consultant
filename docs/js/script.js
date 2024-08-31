@@ -77,8 +77,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 messageElement.appendChild(typingCursor);
                 let i = 0;
                 
-                messageElement.innerHTML = formattedMessage.substring(0, i) + typingCursor.outerHTML;
-                
                 const typingInterval = setInterval(() => {
                     if (i < formattedMessage.length) {
                         messageElement.innerHTML = formattedMessage.substring(0, i) + typingCursor.outerHTML;
