@@ -63,34 +63,36 @@ document.addEventListener('DOMContentLoaded', function() {
         if (!isUser) {
             let formattedMessage = '';
             let i = 0;
-            const updateInterval = 5; // Update every 5 characters
-            const tempElement = document.createElement('div');
-            
             const typingInterval = setInterval(() => {
                 if (i < message.length) {
                     formattedMessage += message[i];
+                    messageElement.innerHTML = formatMessage(formattedMessage);
+                    const typingCursor = document.createElement('span');
+                    typingCursor.className = 'typing-cursor';
+                    messageElement.appendChild(typingCursor);
                     i++;
-                    
-                    if (i % updateInterval === 0 || i === message.length) {
-                        tempElement.innerHTML = formatMessage(formattedMessage);
-                        messageElement.innerHTML = tempElement.innerHTML;
-                        const typingCursor = document.createElement('span');
-                        typingCursor.className = 'typing-cursor';
-                        messageElement.appendChild(typingCursor);
-                    }
                 } else {
                     clearInterval(typingInterval);
                     messageElement.innerHTML = formatMessage(formattedMessage);
                 }
                 chatBox.scrollTop = chatBox.scrollHeight;
-            }, isWelcome ? 50 : 10);
+            }, isWelcome ? 50 : 10); // Slower for welcome message, faster for chatbot responses
         } else {
             messageElement.textContent = message;
         }
         
         chatBox.scrollTop = chatBox.scrollHeight;
     }
-    
+
+    function handleUserInput() {
+        const message = userInput.value.trim();
+        if (message) {
+            addMessage(message, true);
+            userInput.value = '';
+            fetchAIResponse(message);
+        }
+    }
+
     async function fetchAIResponse(message) {
         try {
             const response = await fetch(apiUrl, {
