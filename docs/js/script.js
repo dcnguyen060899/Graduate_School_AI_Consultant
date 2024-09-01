@@ -110,22 +110,22 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    sendButton.addEventListener('click', handleUserInput);
-    userInput.addEventListener('keypress', (e) => {
-        if (e.key === 'Enter' && !e.shiftKey) {
-            handleUserInput();
-            e.preventDefault();
-        }
-    });
+   sendButton.addEventListener('click', handleUserInput);
 
     userInput.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter' && e.shiftKey) {
-            const start = userInput.selectionStart;
-            const end = userInput.selectionEnd;
-
-            userInput.value = userInput.value.substring(0, start) + "\n" + userInput.value.substring(end);
-            userInput.selectionStart = userInput.selectionEnd = start + 1;
-            e.preventDefault();
+        if (e.key === 'Enter') {
+            if (e.shiftKey) {
+                // Insert a newline character at the current cursor position
+                const start = userInput.selectionStart;
+                const end = userInput.selectionEnd;
+                userInput.value = userInput.value.substring(0, start) + "\n" + userInput.value.substring(end);
+                userInput.selectionStart = userInput.selectionEnd = start + 1;
+                e.preventDefault(); // Prevent the default Enter behavior
+            } else {
+                // Submit the form (execute the handleUserInput function)
+                handleUserInput();
+                e.preventDefault(); // Prevent the default Enter behavior
+            }
         }
     });
     
