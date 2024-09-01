@@ -112,9 +112,23 @@ document.addEventListener('DOMContentLoaded', function() {
 
     sendButton.addEventListener('click', handleUserInput);
     userInput.addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') handleUserInput();
+        if (e.key === 'Enter' && !e.shiftKey) {
+            handleUserInput();
+            e.preventDefault();
+        }
     });
 
+    userInput.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' && e.shiftKey) {
+            const start = userInput.selectionStart;
+            const end = userInput.selectionEnd;
+
+            userInput.value = userInput.value.substring(0, start) + "\n" + userInput.value.substring(end);
+            userInput.selectionStart = userInput.selectionEnd = start + 1;
+            e.preventDefault();
+        }
+    });
+    
     // Initial welcome message with typing animation
     addMessage("Welcome! I'm your AI consultant for graduate school applications. How can I assist you today?", false, true);
 });
