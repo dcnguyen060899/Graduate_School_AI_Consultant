@@ -7,7 +7,8 @@ document.addEventListener('DOMContentLoaded', function() {
     function formatMessage(message) {
         const lines = message.split('\n');
         let formattedHTML = '';
-        let listLevel = 0;
+        let inList = false;
+        let inSubList = false;
     
         function formatBold(text) {
             return text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
@@ -23,50 +24,53 @@ document.addEventListener('DOMContentLoaded', function() {
             return null;
         }
     
-        function startList() {
-            listLevel++;
-            return '<ul>';
-        }
-    
-        function endList() {
-            listLevel--;
-            return '</ul>';
-        }
-    
-        lines.forEach((line, index) => {
+        lines.forEach(line => {
             line = line.trim();
             const header = formatHeader(line);
             if (header) {
-                while (listLevel > 0) {
-                    formattedHTML += endList();
+                if (inSubList) {
+                    formattedHTML += '</ul></li>';
+                    inSubList = false;
+                }
+                if (inList) {
+                    formattedHTML += '</ul>';
+                    inList = false;
                 }
                 formattedHTML += header;
             } else if (line.startsWith('- ')) {
-                if (listLevel === 0) {
-                    formattedHTML += startList();
+                if (!inList) {
+                    formattedHTML += '<ul>';
+                    inList = true;
                 }
-                formattedHTML += `<li>${formatBold(line.substring(2))}`;
                 
-                // Check if the next line is indented
-                if (index + 1 < lines.length && lines[index + 1].trim().startsWith('- ')) {
-                    formattedHTML += startList();
+                if (line.includes('Requirements:')) {
+                    inSubList = true;
+                    formattedHTML += `<li>${formatBold(line.substring(2))}<ul>`;
+                } else if (inSubList) {
+                    formattedHTML += `<li>${formatBold(line.substring(2))}</li>`;
                 } else {
-                    formattedHTML += '</li>';
+                    formattedHTML += `<li>${formatBold(line.substring(2))}</li>`;
                 }
-            } else if (line) {
-                while (listLevel > 0) {
-                    formattedHTML += endList();
-                }
-                formattedHTML += `<p>${formatBold(line)}</p>`;
             } else {
-                if (listLevel === 0) {
-                    formattedHTML += '<br>';
+                if (inSubList) {
+                    formattedHTML += '</ul></li>';
+                    inSubList = false;
+                }
+                if (inList) {
+                    formattedHTML += '</ul>';
+                    inList = false;
+                }
+                if (line) {
+                    formattedHTML += `<p>${formatBold(line)}</p>`;
                 }
             }
         });
     
-        while (listLevel > 0) {
-            formattedHTML += endList();
+        if (inSubList) {
+            formattedHTML += '</ul></li>';
+        }
+        if (inList) {
+            formattedHTML += '</ul>';
         }
     
         return formattedHTML;
