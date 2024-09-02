@@ -7,43 +7,37 @@ document.addEventListener('DOMContentLoaded', function() {
     function formatMessage(message) {
         const lines = message.split('\n');
         let formattedHTML = '';
-        let inList = false;
-        let inSubList = false;
     
         function formatBold(text) {
             return text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
         }
     
+        function formatHeader(line) {
+            const headerMatch = line.match(/^(#+)\s(.*)$/);
+            if (headerMatch) {
+                const level = headerMatch[1].length;
+                const text = headerMatch[2];
+                return `<h${level}>${formatBold(text)}</h${level}>`;
+            }
+            return null;
+        }
+    
         lines.forEach(line => {
             line = line.trim();
-            if (line.startsWith('- ')) {
-                if (!inList) {
-                    formattedHTML += '<ul>';
-                    inList = true;
-                }
-                
-                if (line.includes('Admission Requirements:')) {
-                    inSubList = true;
-                    formattedHTML += `<li>${formatBold(line.substring(2))}<ul>`;
-                } else if (inSubList) {
-                    formattedHTML += `<li>${formatBold(line.substring(2))}</li>`;
-                } else {
-                    formattedHTML += `<li>${formatBold(line.substring(2))}</li>`;
-                }
+            const header = formatHeader(line);
+            if (header) {
+                formattedHTML += header;
+            } else if (line.startsWith('- ')) {
+                formattedHTML += `<li>${formatBold(line.substring(2))}</li>`;
+            } else if (line) {
+                formattedHTML += `<p>${formatBold(line)}</p>`;
             } else {
-                if (inSubList) {
-                    formattedHTML += '</ul></li>';
-                    inSubList = false;
-                }
-                if (inList) {
-                    formattedHTML += '</ul>';
-                    inList = false;
-                }
-                if (line) {
-                    formattedHTML += `<p>${formatBold(line)}</p>`;
-                }
+                formattedHTML += '<br>';
             }
         });
+    
+        return formattedHTML;
+    }
     
         if (inSubList) {
             formattedHTML += '</ul></li>';
