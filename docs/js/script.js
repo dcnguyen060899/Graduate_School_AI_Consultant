@@ -7,83 +7,61 @@ document.addEventListener('DOMContentLoaded', function() {
     function formatMessage(message) {
         const lines = message.split('\n');
         let formattedHTML = '';
-        let listStack = [];
-        let indentStack = [];
+        let currentLevel = 0;
+        let listStack = [{ level: -1, html: '' }];
     
         function formatBold(text) {
             return text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
-        }
-    
-        function formatHeader(line) {
-            const headerMatch = line.match(/^(#+)\s(.*)$/);
-            if (headerMatch) {
-                const level = headerMatch[1].length;
-                const text = headerMatch[2];
-                return `<h${level}>${formatBold(text)}</h${level}>`;
-            }
-            return null;
         }
     
         function getIndentLevel(line) {
             return line.search(/\S|$/) / 2;
         }
     
-        lines.forEach((line, index) => {
+        function closeList(toLevel) {
+            while (listStack.length > 1 && listStack[listStack.length - 1].level >= toLevel) {
+                const list = listStack.pop();
+                listStack[listStack.length - 1].html += `${list.html}</li></ul>`;
+            }
+        }
+    
+        lines.forEach((line) => {
             const indentLevel = getIndentLevel(line);
             line = line.trim();
-            const header = formatHeader(line);
     
-            if (header) {
-                while (listStack.length > 0) {
-                    formattedHTML += '</li></ul>';
-                    listStack.pop();
-                    indentStack.pop();
-                }
-                formattedHTML += header;
+            if (line.startsWith('#')) {
+                closeList(0);
+                const level = line.split(' ')[0].length;
+                formattedHTML += `<h${level}>${formatBold(line.substring(level + 1))}</h${level}>`;
+                currentLevel = 0;
             } else if (line.startsWith('- ') || line.startsWith('• ')) {
                 const content = formatBold(line.substring(2));
-                
-                while (indentStack.length > 0 && indentStack[indentStack.length - 1] >= indentLevel) {
-                    formattedHTML += '</li></ul>';
-                    listStack.pop();
-                    indentStack.pop();
-                }
     
-                if (listStack.length === 0 || indentLevel > indentStack[indentStack.length - 1]) {
-                    formattedHTML += '<ul>';
-                    listStack.push(true);
-                    indentStack.push(indentLevel);
+                if (indentLevel > currentLevel) {
+                    listStack.push({ level: indentLevel, html: `<ul><li>${content}` });
                 } else {
-                    formattedHTML += '</li>';
+                    closeList(indentLevel);
+                    listStack[listStack.length - 1].html += `<li>${content}`;
                 }
     
-                formattedHTML += `<li>${content}`;
+                if (!content.endsWith(':')) {
+                    listStack[listStack.length - 1].html += '</li>';
+                }
     
-                if (content.endsWith(':') && index < lines.length - 1 && 
-                    (lines[index + 1].trim().startsWith('- ') || lines[index + 1].trim().startsWith('• '))) {
-                    // Don't close the <li> tag for items ending with colon
-                } else {
-                    formattedHTML += '</li>';
-                }
-            } else {
-                while (listStack.length > 0) {
-                    formattedHTML += '</li></ul>';
-                    listStack.pop();
-                    indentStack.pop();
-                }
-                if (line) {
-                    formattedHTML += `<p>${formatBold(line)}</p>`;
-                }
+                currentLevel = indentLevel;
+            } else if (line) {
+                closeList(0);
+                formattedHTML += `<p>${formatBold(line)}</p>`;
+                currentLevel = 0;
             }
         });
     
-        while (listStack.length > 0) {
-            formattedHTML += '</li></ul>';
-            listStack.pop();
-        }
+        closeList(0);
+        formattedHTML += listStack[0].html;
     
         return formattedHTML;
     }
+    
     function formatUserMessage(message) {
         return message.split('\n').map(line => `<p>${line}</p>`).join('');
     }
