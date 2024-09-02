@@ -60,11 +60,17 @@ body, html {
 }
 .input-box {
     flex-grow: 1;
-    padding: 10px;
+    padding: 10px 15px; /* Adjust padding to match user message */
     border: 1px solid #ccc;
-    border-radius: 20px;
+    border-radius: 18px; /* Match the border-radius of the user message */
     font-size: 14px;
+    background-color: #dcf8c6; /* Match the background color of the user message */
+    color: #333;
+    resize: none; /* Disable resizing if you don't want users to resize the textarea */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Optional: Add a shadow for consistency */
+    outline: none; /* Remove the outline when focused */
 }
+
 .send-button {
     background-color: #3498db;
     color: white;
@@ -78,9 +84,11 @@ body, html {
     align-items: center;
     justify-content: center;
 }
+
 .send-button:hover {
     background-color: #2980b9;
 }
+
 .typing-cursor {
     display: inline-block;
     width: 10px;
