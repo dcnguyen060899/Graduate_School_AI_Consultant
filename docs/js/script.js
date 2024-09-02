@@ -7,8 +7,8 @@ document.addEventListener('DOMContentLoaded', function() {
     function formatMessage(message) {
         const lines = message.split('\n');
         let formattedHTML = '';
-        let inList = false;
-        let inSubList = false;
+        let listStack = [];
+        let lastIndentLevel = 0;
     
         function formatBold(text) {
             return text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
@@ -24,53 +24,52 @@ document.addEventListener('DOMContentLoaded', function() {
             return null;
         }
     
-        lines.forEach(line => {
+        function getIndentLevel(line) {
+            return line.search(/\S|$/) / 2;
+        }
+    
+        lines.forEach((line, index) => {
+            const indentLevel = getIndentLevel(line);
             line = line.trim();
             const header = formatHeader(line);
+    
             if (header) {
-                if (inSubList) {
-                    formattedHTML += '</ul></li>';
-                    inSubList = false;
-                }
-                if (inList) {
+                while (listStack.length > 0) {
                     formattedHTML += '</ul>';
-                    inList = false;
+                    listStack.pop();
                 }
                 formattedHTML += header;
-            } else if (line.startsWith('- ')) {
-                if (!inList) {
-                    formattedHTML += '<ul>';
-                    inList = true;
+            } else if (line.startsWith('- ') || line.startsWith('• ')) {
+                while (listStack.length > indentLevel) {
+                    formattedHTML += '</ul>';
+                    listStack.pop();
                 }
-                
-                if (line.includes('Requirements:')) {
-                    inSubList = true;
-                    formattedHTML += `<li>${formatBold(line.substring(2))}<ul>`;
-                } else if (inSubList) {
-                    formattedHTML += `<li>${formatBold(line.substring(2))}</li>`;
+                if (listStack.length < indentLevel || (indentLevel === lastIndentLevel && line.includes(':'))) {
+                    formattedHTML += '<ul>';
+                    listStack.push(indentLevel);
+                }
+                formattedHTML += `<li>${formatBold(line.substring(2))}`;
+                if (line.includes(':') && !line.endsWith(':') && index < lines.length - 1 && lines[index + 1].trim().startsWith('- ')) {
+                    formattedHTML += '<ul>';
+                    listStack.push(indentLevel + 1);
                 } else {
-                    formattedHTML += `<li>${formatBold(line.substring(2))}</li>`;
+                    formattedHTML += '</li>';
                 }
             } else {
-                if (inSubList) {
-                    formattedHTML += '</ul></li>';
-                    inSubList = false;
-                }
-                if (inList) {
+                while (listStack.length > 0) {
                     formattedHTML += '</ul>';
-                    inList = false;
+                    listStack.pop();
                 }
                 if (line) {
                     formattedHTML += `<p>${formatBold(line)}</p>`;
                 }
             }
+            lastIndentLevel = indentLevel;
         });
     
-        if (inSubList) {
-            formattedHTML += '</ul></li>';
-        }
-        if (inList) {
+        while (listStack.length > 0) {
             formattedHTML += '</ul>';
+            listStack.pop();
         }
     
         return formattedHTML;
