@@ -60,11 +60,19 @@ body, html {
 }
 .input-box {
     flex-grow: 1;
-    padding: 10px;
+    padding: 10px 15px;
     border: 1px solid #ccc;
-    border-radius: 20px;
+    border-radius: 18px;
     font-size: 14px;
+    background-color: #dcf8c6;
+    color: #333;
+    resize: none; /* Disable the manual resizing by the user */
+    min-height: 40px; /* Set a minimum height */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    outline: none;
+    overflow-y: hidden; /* Hide the scrollbar to avoid distraction */
 }
+
 .send-button {
     background-color: #3498db;
     color: white;
