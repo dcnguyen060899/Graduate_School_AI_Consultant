@@ -56,16 +56,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function formatUserMessage(message) {
-        return message.split('\n').map((line, index) => {
-            line = line.trim();
-            if (line === '') {
-                return '<br>'; // Empty line
-            } else if (line.match(/^\d+\./)) {
-                return `<p>${line}</p>`; // Already numbered line
-            } else {
-                return `<p>${index + 1}. ${line}</p>`; // Add numbering
-            }
-        }).join('');
+        return message.split('\n').map(line => `<p>${line}</p>`).join('');
     }
     
     function addMessage(message, isUser = false, isWelcome = false) {
