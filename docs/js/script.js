@@ -56,15 +56,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function formatUserMessage(message) {
-        const lines = message.split('\n');
-        return lines.map((line, index) => {
-            const trimmedLine = line.trim();
-            if (trimmedLine.match(/^\d+\./)) {
-                return `<p>${trimmedLine}</p>`;
-            } else {
-                return `<p>${(index + 1)}. ${trimmedLine}</p>`;
-            }
-        }).join('');
+        return message.split('\n').map(line => `<p>${line}</p>`).join('');
     }
     
     function addMessage(message, isUser = false, isWelcome = false) {
@@ -97,7 +89,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function handleUserInput() {
-        const message = userInput.value.trim();
+        const message = userInput.value.split('\n').map(line => line.trim()).join('\n').trim();
         if (message) {
             addMessage(message, true);
             userInput.value = '';
