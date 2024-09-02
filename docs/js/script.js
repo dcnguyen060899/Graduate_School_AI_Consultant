@@ -54,6 +54,18 @@ document.addEventListener('DOMContentLoaded', function() {
     
         return formattedHTML;
     }
+
+    function formatUserMessage(message) {
+        const lines = message.split('\n');
+        return lines.map((line, index) => {
+            const trimmedLine = line.trim();
+            if (trimmedLine.match(/^\d+\./)) {
+                return `<p>${trimmedLine}</p>`;
+            } else {
+                return `<p>${(index + 1)}. ${trimmedLine}</p>`;
+            }
+        }).join('');
+    }
     
     function addMessage(message, isUser = false, isWelcome = false) {
         const messageElement = document.createElement('div');
@@ -78,7 +90,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 chatBox.scrollTop = chatBox.scrollHeight;
             }, isWelcome ? 50 : 10); // Slower for welcome message, faster for chatbot responses
         } else {
-            messageElement.textContent = message;
+            messageElement.innerHTML = formatUserMessage(message);
         }
         
         chatBox.scrollTop = chatBox.scrollHeight;
@@ -112,19 +124,19 @@ document.addEventListener('DOMContentLoaded', function() {
 
     sendButton.addEventListener('click', handleUserInput);
 
+    userInput.addEventListener('input', function() {
+        this.style.height = 'auto';
+        this.style.height = (this.scrollHeight) + 'px';
+    });
+
     userInput.addEventListener('keydown', (e) => {
         if (e.key === 'Enter') {
             if (e.shiftKey) {
-                // Insert a newline character at the current cursor position
-                const start = userInput.selectionStart;
-                const end = userInput.selectionEnd;
-                userInput.value = userInput.value.substring(0, start) + "\n" + userInput.value.substring(end);
-                userInput.selectionStart = userInput.selectionEnd = start + 1;
-                e.preventDefault(); // Prevent the default Enter behavior
+                // Allow newline when Shift+Enter is pressed
+                return;
             } else {
-                // Submit the form (execute the handleUserInput function)
+                e.preventDefault(); // Prevent default Enter behavior
                 handleUserInput();
-                e.preventDefault(); // Prevent the default Enter behavior
             }
         }
     });
