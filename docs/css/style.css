@@ -58,32 +58,32 @@ body, html {
     padding: 10px;
     background-color: #f1f3f6;
 }
-.user-message, .input-box {
-    background-color: #dcf8c6;
-    border-radius: 18px;
-    padding: 10px 15px;
-    font-size: 14px;
-    color: #333;
-    line-height: 1.4;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    border: none;
-    outline: none;
-    width: 80%; /* Same width for consistency */
-    margin: 5px 0; /* Margin to separate elements, match if user-message has it */
-}
 
 .input-box {
-    resize: none;
-    overflow-y: auto; /* Allow scroll for multi-line text */
-    min-height: 50px; /* Ensure the input box starts at the same height */
+    flex-grow: 1;
+    padding: 10px 15px; /* Match the padding of user-message */
+    border-radius: 18px; /* Match the border-radius of user-message */
+    font-size: 14px; /* Match the font size of user-message */
+    background-color: #f7f9fc; /* Distinct background color for the input box */
+    color: #333; /* Same text color */
+    resize: none; /* Disable manual resizing */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Optional: Add a light shadow for a similar feel */
+    border: 1px solid #ccc; /* Optional: Add a light border */
+    outline: none; /* Remove outline on focus */
+    line-height: 1.4; /* Match the line height of user-message */
+    min-height: 40px; /* Ensure a good starting height */
+    max-width: 100%; /* Ensure it doesn't exceed the container width */
+    overflow-y: auto; /* Allow scrolling for long text */
 }
 
-/* Ensure the send button and input area align nicely */
+/* Ensure the input box container aligns well with the send button */
 .input-area {
     display: flex;
     align-items: center;
     padding: 10px;
-    background-color: #f1f3f6;
+    background-color: #fff; /* Background color of the input area */
+    border-radius: 18px; /* Match the border-radius of user-message */
+    margin-top: 10px; /* Add some space above the input area */
 }
 
 .send-button {
