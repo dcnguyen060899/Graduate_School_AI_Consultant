@@ -8,7 +8,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const lines = message.split('\n');
         let formattedHTML = '';
         let listStack = [];
-        let lastIndentLevel = 0;
+        let indentStack = [];
     
         function formatBold(text) {
             return text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
@@ -37,45 +37,44 @@ document.addEventListener('DOMContentLoaded', function() {
                 while (listStack.length > 0) {
                     formattedHTML += '</li></ul>';
                     listStack.pop();
+                    indentStack.pop();
                 }
                 formattedHTML += header;
             } else if (line.startsWith('- ') || line.startsWith('• ')) {
                 const content = formatBold(line.substring(2));
                 
-                if (indentLevel > lastIndentLevel) {
+                while (indentStack.length > 0 && indentStack[indentStack.length - 1] >= indentLevel) {
+                    formattedHTML += '</li></ul>';
+                    listStack.pop();
+                    indentStack.pop();
+                }
+    
+                if (listStack.length === 0 || indentLevel > indentStack[indentStack.length - 1]) {
                     formattedHTML += '<ul>';
-                    listStack.push(indentLevel);
-                } else if (indentLevel < lastIndentLevel) {
-                    while (listStack.length > 0 && listStack[listStack.length - 1] > indentLevel) {
-                        formattedHTML += '</li></ul>';
-                        listStack.pop();
-                    }
-                    if (formattedHTML.endsWith('</ul>')) {
-                        formattedHTML += '</li>';
-                    }
-                } else if (formattedHTML.endsWith('</li>')) {
-                    formattedHTML = formattedHTML.slice(0, -5);
+                    listStack.push(true);
+                    indentStack.push(indentLevel);
+                } else {
+                    formattedHTML += '</li>';
                 }
     
                 formattedHTML += `<li>${content}`;
     
                 if (content.endsWith(':') && index < lines.length - 1 && 
                     (lines[index + 1].trim().startsWith('- ') || lines[index + 1].trim().startsWith('• '))) {
-                    formattedHTML += '<ul>';
-                    listStack.push(indentLevel + 1);
-                } else if (!content.endsWith(':')) {
+                    // Don't close the <li> tag for items ending with colon
+                } else {
                     formattedHTML += '</li>';
                 }
             } else {
                 while (listStack.length > 0) {
                     formattedHTML += '</li></ul>';
                     listStack.pop();
+                    indentStack.pop();
                 }
                 if (line) {
                     formattedHTML += `<p>${formatBold(line)}</p>`;
                 }
             }
-            lastIndentLevel = indentLevel;
         });
     
         while (listStack.length > 0) {
@@ -85,7 +84,6 @@ document.addEventListener('DOMContentLoaded', function() {
     
         return formattedHTML;
     }
-
     function formatUserMessage(message) {
         return message.split('\n').map(line => `<p>${line}</p>`).join('');
     }
