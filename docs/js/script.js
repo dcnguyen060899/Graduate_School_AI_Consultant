@@ -35,29 +35,40 @@ document.addEventListener('DOMContentLoaded', function() {
     
             if (header) {
                 while (listStack.length > 0) {
-                    formattedHTML += '</ul>';
+                    formattedHTML += '</li></ul>';
                     listStack.pop();
                 }
                 formattedHTML += header;
             } else if (line.startsWith('- ') || line.startsWith('• ')) {
-                while (listStack.length > indentLevel) {
-                    formattedHTML += '</ul>';
-                    listStack.pop();
-                }
-                if (listStack.length < indentLevel || (indentLevel === lastIndentLevel && line.includes(':'))) {
+                const content = formatBold(line.substring(2));
+                
+                if (indentLevel > lastIndentLevel) {
                     formattedHTML += '<ul>';
                     listStack.push(indentLevel);
+                } else if (indentLevel < lastIndentLevel) {
+                    while (listStack.length > 0 && listStack[listStack.length - 1] > indentLevel) {
+                        formattedHTML += '</li></ul>';
+                        listStack.pop();
+                    }
+                    if (formattedHTML.endsWith('</ul>')) {
+                        formattedHTML += '</li>';
+                    }
+                } else if (formattedHTML.endsWith('</li>')) {
+                    formattedHTML = formattedHTML.slice(0, -5);
                 }
-                formattedHTML += `<li>${formatBold(line.substring(2))}`;
-                if (line.includes(':') && !line.endsWith(':') && index < lines.length - 1 && lines[index + 1].trim().startsWith('- ')) {
+    
+                formattedHTML += `<li>${content}`;
+    
+                if (content.endsWith(':') && index < lines.length - 1 && 
+                    (lines[index + 1].trim().startsWith('- ') || lines[index + 1].trim().startsWith('• '))) {
                     formattedHTML += '<ul>';
                     listStack.push(indentLevel + 1);
-                } else {
+                } else if (!content.endsWith(':')) {
                     formattedHTML += '</li>';
                 }
             } else {
                 while (listStack.length > 0) {
-                    formattedHTML += '</ul>';
+                    formattedHTML += '</li></ul>';
                     listStack.pop();
                 }
                 if (line) {
@@ -68,7 +79,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     
         while (listStack.length > 0) {
-            formattedHTML += '</ul>';
+            formattedHTML += '</li></ul>';
             listStack.pop();
         }
     
