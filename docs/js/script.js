@@ -7,6 +7,7 @@ document.addEventListener('DOMContentLoaded', function() {
     function formatMessage(message) {
         const lines = message.split('\n');
         let formattedHTML = '';
+        let listLevel = 0;
     
         function formatBold(text) {
             return text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
@@ -22,28 +23,50 @@ document.addEventListener('DOMContentLoaded', function() {
             return null;
         }
     
-        lines.forEach(line => {
+        function startList() {
+            listLevel++;
+            return '<ul>';
+        }
+    
+        function endList() {
+            listLevel--;
+            return '</ul>';
+        }
+    
+        lines.forEach((line, index) => {
             line = line.trim();
             const header = formatHeader(line);
             if (header) {
+                while (listLevel > 0) {
+                    formattedHTML += endList();
+                }
                 formattedHTML += header;
             } else if (line.startsWith('- ')) {
-                formattedHTML += `<li>${formatBold(line.substring(2))}</li>`;
+                if (listLevel === 0) {
+                    formattedHTML += startList();
+                }
+                formattedHTML += `<li>${formatBold(line.substring(2))}`;
+                
+                // Check if the next line is indented
+                if (index + 1 < lines.length && lines[index + 1].trim().startsWith('- ')) {
+                    formattedHTML += startList();
+                } else {
+                    formattedHTML += '</li>';
+                }
             } else if (line) {
+                while (listLevel > 0) {
+                    formattedHTML += endList();
+                }
                 formattedHTML += `<p>${formatBold(line)}</p>`;
             } else {
-                formattedHTML += '<br>';
+                if (listLevel === 0) {
+                    formattedHTML += '<br>';
+                }
             }
         });
     
-        return formattedHTML;
-    }
-    
-        if (inSubList) {
-            formattedHTML += '</ul></li>';
-        }
-        if (inList) {
-            formattedHTML += '</ul>';
+        while (listLevel > 0) {
+            formattedHTML += endList();
         }
     
         return formattedHTML;
