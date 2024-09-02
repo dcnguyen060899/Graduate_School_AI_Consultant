@@ -52,6 +52,12 @@ body, html {
     background-color: #dcf8c6;
     align-self: flex-end;
     margin-left: auto;
+    text-align: left;
+}
+
+.user-message p {
+    margin: 0;
+    padding: 2px 0;
 }
 .input-area {
     display: flex;
