@@ -59,10 +59,6 @@ body, html {
     margin: 0;
     padding: 2px 0;
 }
-.user-message br {
-    line-height: 150%;
-}
-
 .input-area {
     display: flex;
     padding: 10px;
