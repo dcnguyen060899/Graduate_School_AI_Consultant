@@ -59,23 +59,23 @@ body, html {
     background-color: #f1f3f6;
 }
 .user-message, .input-box {
-    padding: 10px 15px;
-    border-radius: 18px;
-    font-size: 14px;
     background-color: #dcf8c6;
+    border-radius: 18px;
+    padding: 10px 15px;
+    font-size: 14px;
     color: #333;
     line-height: 1.4;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Apply only if your user messages have shadow */
-    border: none; /* Ensure no border if user messages don't have one */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    border: none;
     outline: none;
-    max-width: 80%; /* Adjust as needed to match user message width */
+    width: 80%; /* Same width for consistency */
+    margin: 5px 0; /* Margin to separate elements, match if user-message has it */
 }
 
 .input-box {
     resize: none;
-    min-height: 50px;
-    overflow-y: auto;
-    width: 100%; /* Ensure it takes up the full width */
+    overflow-y: auto; /* Allow scroll for multi-line text */
+    min-height: 50px; /* Ensure the input box starts at the same height */
 }
 
 /* Ensure the send button and input area align nicely */
