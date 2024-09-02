@@ -48,48 +48,31 @@ body, html {
     background-color: #e8f4fc;
     align-self: flex-start;
 }
-
-/* Header styles */
 .ai-message h1, .ai-message h2, .ai-message h3, .ai-message h4, .ai-message h5, .ai-message h6 {
     margin: 10px 0;
     font-weight: bold;
 }
-
 .ai-message h1 { font-size: 1.6em; }
 .ai-message h2 { font-size: 1.4em; }
 .ai-message h3 { font-size: 1.2em; }
 .ai-message h4 { font-size: 1.1em; }
 .ai-message h5, .ai-message h6 { font-size: 1em; }
-
-/* List and paragraph styles */
 .ai-message ul {
     margin: 5px 0;
     padding-left: 20px;
 }
-
 .ai-message ul ul {
     margin: 2px 0;
-    padding-left: 20px;
 }
-
 .ai-message li {
     margin-bottom: 5px;
 }
-
-.ai-message p {
-    margin: 5px 0;
-    padding-left: 20px;
-    line-height: 1.5;
-}
-
-
 .user-message {
     background-color: #dcf8c6;
     align-self: flex-end;
     margin-left: auto;
     text-align: left;
 }
-
 .user-message p {
     margin: 0;
     padding: 2px 0;
@@ -99,34 +82,31 @@ body, html {
     padding: 10px;
     background-color: #f1f3f6;
 }
-
 .input-box {
     flex-grow: 1;
-    padding: 10px 15px; /* Match the padding of user-message */
-    border-radius: 18px; /* Match the border-radius of user-message */
-    font-size: 14px; /* Match the font size of user-message */
-    background-color: #f7f9fc; /* Distinct background color for the input box */
-    color: #333; /* Same text color */
-    resize: none; /* Disable manual resizing */
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Optional: Add a light shadow for a similar feel */
-    border: 1px solid #ccc; /* Optional: Add a light border */
-    outline: none; /* Remove outline on focus */
-    line-height: 1.4; /* Match the line height of user-message */
-    min-height: 40px; /* Ensure a good starting height */
-    max-width: 100%; /* Ensure it doesn't exceed the container width */
-    overflow-y: auto; /* Allow scrolling for long text */
+    padding: 10px 15px; /* Match the padding of user-message /
+    border-radius: 18px; / Match the border-radius of user-message /
+    font-size: 14px; / Match the font size of user-message /
+    background-color: #f7f9fc; / Distinct background color for the input box /
+    color: #333; / Same text color /
+    resize: none; / Disable manual resizing /
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); / Optional: Add a light shadow for a similar feel /
+    border: 1px solid #ccc; / Optional: Add a light border /
+    outline: none; / Remove outline on focus /
+    line-height: 1.4; / Match the line height of user-message /
+    min-height: 40px; / Ensure a good starting height /
+    max-width: 100%; / Ensure it doesn't exceed the container width /
+    overflow-y: auto; / Allow scrolling for long text /
 }
-
-/* Ensure the input box container aligns well with the send button */
+/ Ensure the input box container aligns well with the send button /
 .input-area {
     display: flex;
     align-items: center;
     padding: 10px;
-    background-color: #fff; /* Background color of the input area */
-    border-radius: 18px; /* Match the border-radius of user-message */
-    margin-top: 10px; /* Add some space above the input area */
+    background-color: #fff; / Background color of the input area /
+    border-radius: 18px; / Match the border-radius of user-message /
+    margin-top: 10px; / Add some space above the input area */
 }
-
 .send-button {
     background-color: #3498db;
     color: white;
