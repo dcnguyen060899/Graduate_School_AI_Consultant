@@ -38,12 +38,12 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
                 headerStack.push(headerLevel);
     
-                // Adjust header level to differentiate between main headers and subheaders
-                const adjustedHeaderLevel = headerLevel > 2 ? headerLevel : headerLevel + 1;
-                formattedHTML += `<h${adjustedHeaderLevel}>${formatBold(line.substring(headerLevel).trim())}</h${adjustedHeaderLevel}>`;
+                formattedHTML += `<h${headerLevel}>${formatBold(line.substring(headerLevel).trim())}</h${headerLevel}>`;
+            } else if (line.endsWith(':') && !line.startsWith('-') && !line.startsWith('•')) {
+                closeListsToLevel(0);
+                formattedHTML += `<p><strong>${formatBold(line)}</strong></p>`;
             } else if (line.startsWith('- ') || line.startsWith('• ')) {
                 const content = formatBold(line.substring(2));
-                const currentHeaderLevel = headerStack[headerStack.length - 1];
     
                 if (indentLevel > listStack[listStack.length - 1]) {
                     formattedHTML += '<ul>';
@@ -52,14 +52,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     closeListsToLevel(indentLevel);
                 }
     
-                formattedHTML += `<li>${content}`;
-    
-                if (content.endsWith(':') && index < lines.length - 1 && 
-                    (lines[index + 1].trim().startsWith('- ') || lines[index + 1].trim().startsWith('• '))) {
-                    // Don't close the <li> tag for items ending with colon
-                } else {
-                    formattedHTML += '</li>';
-                }
+                formattedHTML += `<li>${content}</li>`;
             } else {
                 closeListsToLevel(0);
                 if (line) {
@@ -72,6 +65,7 @@ document.addEventListener('DOMContentLoaded', function() {
     
         return formattedHTML;
     }
+
 
     function formatUserMessage(message) {
         return message.split('\n').map(line => `<p>${line}</p>`).join('');
