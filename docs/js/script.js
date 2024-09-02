@@ -7,8 +7,9 @@ document.addEventListener('DOMContentLoaded', function() {
     function formatMessage(message) {
         const lines = message.split('\n');
         let formattedHTML = '';
-        let currentLevel = 0;
-        let listStack = [{ level: -1, html: '' }];
+        let currentHeaderLevel = 0;
+        let listLevel = 0;
+        let inList = false;
     
         function formatBold(text) {
             return text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
@@ -18,46 +19,54 @@ document.addEventListener('DOMContentLoaded', function() {
             return line.search(/\S|$/) / 2;
         }
     
-        function closeList(toLevel) {
-            while (listStack.length > 1 && listStack[listStack.length - 1].level >= toLevel) {
-                const list = listStack.pop();
-                listStack[listStack.length - 1].html += `${list.html}</li></ul>`;
+        function closeList() {
+            if (inList) {
+                formattedHTML += '</ul>'.repeat(listLevel);
+                inList = false;
+                listLevel = 0;
             }
         }
     
-        lines.forEach((line) => {
+        lines.forEach((line, index) => {
             const indentLevel = getIndentLevel(line);
             line = line.trim();
     
             if (line.startsWith('#')) {
-                closeList(0);
-                const level = line.split(' ')[0].length;
-                formattedHTML += `<h${level}>${formatBold(line.substring(level + 1))}</h${level}>`;
-                currentLevel = 0;
+                closeList();
+                currentHeaderLevel = line.split(' ')[0].length;
+                formattedHTML += `<h${currentHeaderLevel}>${formatBold(line.substring(currentHeaderLevel + 1))}</h${currentHeaderLevel}>`;
             } else if (line.startsWith('- ') || line.startsWith('• ')) {
                 const content = formatBold(line.substring(2));
+                
+                if (!inList) {
+                    inList = true;
+                    formattedHTML += '<ul>';
+                    listLevel = 1;
+                } else if (indentLevel > listLevel) {
+                    formattedHTML += '<ul>';
+                    listLevel++;
+                } else if (indentLevel < listLevel) {
+                    formattedHTML += '</ul>'.repeat(listLevel - indentLevel);
+                    listLevel = indentLevel;
+                }
     
-                if (indentLevel > currentLevel) {
-                    listStack.push({ level: indentLevel, html: `<ul><li>${content}` });
+                formattedHTML += `<li>${content}`;
+                
+                if (content.endsWith(':') && index < lines.length - 1 && 
+                    (lines[index + 1].trim().startsWith('- ') || lines[index + 1].trim().startsWith('• '))) {
+                    // Don't close the <li> tag for items ending with colon
                 } else {
-                    closeList(indentLevel);
-                    listStack[listStack.length - 1].html += `<li>${content}`;
+                    formattedHTML += '</li>';
                 }
-    
-                if (!content.endsWith(':')) {
-                    listStack[listStack.length - 1].html += '</li>';
+            } else {
+                closeList();
+                if (line) {
+                    formattedHTML += `<p>${formatBold(line)}</p>`;
                 }
-    
-                currentLevel = indentLevel;
-            } else if (line) {
-                closeList(0);
-                formattedHTML += `<p>${formatBold(line)}</p>`;
-                currentLevel = 0;
             }
         });
     
-        closeList(0);
-        formattedHTML += listStack[0].html;
+        closeList();
     
         return formattedHTML;
     }
