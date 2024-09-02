@@ -9,7 +9,7 @@ document.addEventListener('DOMContentLoaded', function() {
         let formattedHTML = '';
         let headerStack = [0];
         let listStack = [0];
-    
+        
         function formatBold(text) {
             return text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
         }
@@ -32,17 +32,17 @@ document.addEventListener('DOMContentLoaded', function() {
             if (line.startsWith('#')) {
                 const headerLevel = line.split(' ')[0].length;
                 closeListsToLevel(0);
-                
+    
                 while (headerStack[headerStack.length - 1] >= headerLevel) {
                     headerStack.pop();
                 }
                 headerStack.push(headerLevel);
     
-                formattedHTML += `<h${headerLevel}>${formatBold(line.substring(headerLevel + 1))}</h${headerLevel}>`;
+                formattedHTML += `<h${headerLevel}>${formatBold(line.substring(headerLevel).trim())}</h${headerLevel}>`;
             } else if (line.startsWith('- ') || line.startsWith('• ')) {
                 const content = formatBold(line.substring(2));
                 const currentHeaderLevel = headerStack[headerStack.length - 1];
-                
+    
                 if (indentLevel > listStack[listStack.length - 1]) {
                     formattedHTML += '<ul>';
                     listStack.push(indentLevel);
@@ -51,7 +51,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
     
                 formattedHTML += `<li>${content}`;
-                
+    
                 if (content.endsWith(':') && index < lines.length - 1 && 
                     (lines[index + 1].trim().startsWith('- ') || lines[index + 1].trim().startsWith('• '))) {
                     // Don't close the <li> tag for items ending with colon
@@ -70,7 +70,7 @@ document.addEventListener('DOMContentLoaded', function() {
     
         return formattedHTML;
     }
-    
+
     function formatUserMessage(message) {
         return message.split('\n').map(line => `<p>${line}</p>`).join('');
     }
