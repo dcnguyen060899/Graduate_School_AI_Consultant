@@ -38,7 +38,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
                 headerStack.push(headerLevel);
     
-                formattedHTML += `<h${headerLevel}>${formatBold(line.substring(headerLevel).trim())}</h${headerLevel}>`;
+                // Adjust header level to differentiate between main headers and subheaders
+                const adjustedHeaderLevel = headerLevel > 2 ? headerLevel : headerLevel + 1;
+                formattedHTML += `<h${adjustedHeaderLevel}>${formatBold(line.substring(headerLevel).trim())}</h${adjustedHeaderLevel}>`;
             } else if (line.startsWith('- ') || line.startsWith('• ')) {
                 const content = formatBold(line.substring(2));
                 const currentHeaderLevel = headerStack[headerStack.length - 1];
