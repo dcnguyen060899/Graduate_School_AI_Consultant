@@ -110,7 +110,10 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-   sendButton.addEventListener('click', handleUserInput);
+   userInput.addEventListener('input', function() {
+        this.style.height = 'auto';
+        this.style.height = (this.scrollHeight) + 'px';
+    });
 
     userInput.addEventListener('keydown', (e) => {
         if (e.key === 'Enter') {
