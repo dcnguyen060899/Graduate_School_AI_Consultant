@@ -58,19 +58,32 @@ body, html {
     padding: 10px;
     background-color: #f1f3f6;
 }
-.input-box {
-    flex-grow: 1;
+.user-message, .input-box {
     padding: 10px 15px;
-    border: 1px solid #ccc;
     border-radius: 18px;
     font-size: 14px;
     background-color: #dcf8c6;
     color: #333;
-    resize: none; /* Disable the manual resizing by the user */
-    min-height: 40px; /* Set a minimum height */
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    line-height: 1.4;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Apply only if your user messages have shadow */
+    border: none; /* Ensure no border if user messages don't have one */
     outline: none;
-    overflow-y: hidden; /* Hide the scrollbar to avoid distraction */
+    max-width: 80%; /* Adjust as needed to match user message width */
+}
+
+.input-box {
+    resize: none;
+    min-height: 50px;
+    overflow-y: auto;
+    width: 100%; /* Ensure it takes up the full width */
+}
+
+/* Ensure the send button and input area align nicely */
+.input-area {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    background-color: #f1f3f6;
 }
 
 .send-button {
