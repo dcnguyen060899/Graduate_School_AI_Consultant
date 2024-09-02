@@ -7,61 +7,71 @@ document.addEventListener('DOMContentLoaded', function() {
     function formatMessage(message) {
         const lines = message.split('\n');
         let formattedHTML = '';
-        let headerStack = [0];
-        let listStack = [0];
-        
+        let inList = false;
+        let inSubList = false;
+    
         function formatBold(text) {
             return text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
         }
     
-        function getIndentLevel(line) {
-            return line.search(/\S|$/) / 2;
-        }
-    
-        function closeListsToLevel(level) {
-            while (listStack[listStack.length - 1] > level) {
-                formattedHTML += '</ul>';
-                listStack.pop();
+        function formatHeader(line) {
+            const headerMatch = line.match(/^(#+)\s(.*)$/);
+            if (headerMatch) {
+                const level = headerMatch[1].length;
+                const text = headerMatch[2];
+                return `<h${level}>${formatBold(text)}</h${level}>`;
             }
+            return null;
         }
     
-        lines.forEach((line, index) => {
-            const indentLevel = getIndentLevel(line);
+        lines.forEach(line => {
             line = line.trim();
-    
-            if (line.startsWith('#')) {
-                const headerLevel = line.split(' ')[0].length;
-                closeListsToLevel(0);
-    
-                while (headerStack[headerStack.length - 1] >= headerLevel) {
-                    headerStack.pop();
+            const header = formatHeader(line);
+            if (header) {
+                if (inSubList) {
+                    formattedHTML += '</ul></li>';
+                    inSubList = false;
                 }
-                headerStack.push(headerLevel);
-    
-                formattedHTML += `<h${headerLevel}>${formatBold(line.substring(headerLevel).trim())}</h${headerLevel}>`;
-            } else if (line.endsWith(':') && !line.startsWith('-') && !line.startsWith('•')) {
-                closeListsToLevel(0);
-                formattedHTML += `<p><strong>${formatBold(line)}</strong></p>`;
-            } else if (line.startsWith('- ') || line.startsWith('• ')) {
-                const content = formatBold(line.substring(2));
-    
-                if (indentLevel > listStack[listStack.length - 1]) {
+                if (inList) {
+                    formattedHTML += '</ul>';
+                    inList = false;
+                }
+                formattedHTML += header;
+            } else if (line.startsWith('- ')) {
+                if (!inList) {
                     formattedHTML += '<ul>';
-                    listStack.push(indentLevel);
-                } else {
-                    closeListsToLevel(indentLevel);
+                    inList = true;
                 }
-    
-                formattedHTML += `<li>${content}</li>`;
+                
+                if (line.includes('Requirements:')) {
+                    inSubList = true;
+                    formattedHTML += `<li>${formatBold(line.substring(2))}<ul>`;
+                } else if (inSubList) {
+                    formattedHTML += `<li>${formatBold(line.substring(2))}</li>`;
+                } else {
+                    formattedHTML += `<li>${formatBold(line.substring(2))}</li>`;
+                }
             } else {
-                closeListsToLevel(0);
+                if (inSubList) {
+                    formattedHTML += '</ul></li>';
+                    inSubList = false;
+                }
+                if (inList) {
+                    formattedHTML += '</ul>';
+                    inList = false;
+                }
                 if (line) {
                     formattedHTML += `<p>${formatBold(line)}</p>`;
                 }
             }
         });
     
-        closeListsToLevel(0);
+        if (inSubList) {
+            formattedHTML += '</ul></li>';
+        }
+        if (inList) {
+            formattedHTML += '</ul>';
+        }
     
         return formattedHTML;
     }
