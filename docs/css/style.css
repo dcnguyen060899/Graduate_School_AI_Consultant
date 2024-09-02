@@ -48,42 +48,55 @@ body, html {
     background-color: #e8f4fc;
     align-self: flex-start;
 }
+
+/* Ensure consistent styling for user messages */
 .user-message {
     background-color: #dcf8c6;
-    align-self: flex-end;
-    margin-left: auto;
+    border-radius: 18px;
+    padding: 10px 15px;
+    font-size: 14px;
+    color: #333;
+    line-height: 1.4;
+    max-width: 80%;
+    margin-bottom: 10px;
+    word-wrap: break-word;
 }
+
 .input-area {
     display: flex;
     padding: 10px;
     background-color: #f1f3f6;
 }
 
+/* Matching input box structure to the user message */
 .input-box {
-    flex-grow: 1;
     padding: 10px 15px; /* Match the padding of user-message */
     border-radius: 18px; /* Match the border-radius of user-message */
     font-size: 14px; /* Match the font size of user-message */
-    background-color: #f7f9fc; /* Distinct background color for the input box */
+    background-color: #ffffff; /* A white background to distinguish from user message */
     color: #333; /* Same text color */
     resize: none; /* Disable manual resizing */
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Optional: Add a light shadow for a similar feel */
-    border: 1px solid #ccc; /* Optional: Add a light border */
+    box-shadow: none; /* Remove shadow to match user-message */
+    border: 1px solid #ccc; /* Light border for distinction */
     outline: none; /* Remove outline on focus */
     line-height: 1.4; /* Match the line height of user-message */
     min-height: 40px; /* Ensure a good starting height */
-    max-width: 100%; /* Ensure it doesn't exceed the container width */
-    overflow-y: auto; /* Allow scrolling for long text */
+    width: 100%; /* Ensure it fills the container width */
+    max-width: 80%; /* Ensure it matches the width of user-message */
+    margin: 0; /* Remove any extra margins */
+    overflow-y: auto; /* Allow scrolling if text overflows */
 }
 
-/* Ensure the input box container aligns well with the send button */
+/* Container alignment for input box and send button */
 .input-area {
     display: flex;
     align-items: center;
     padding: 10px;
-    background-color: #fff; /* Background color of the input area */
-    border-radius: 18px; /* Match the border-radius of user-message */
-    margin-top: 10px; /* Add some space above the input area */
+    background-color: transparent; /* Transparent background to focus on input-box */
+    border-radius: 18px; /* Same rounded corners as user-message */
+    border: none; /* No border for container */
+    width: 100%; /* Full width for container */
+    justify-content: space-between; /* Aligns the input box and button properly */
 }
 
 .send-button {
