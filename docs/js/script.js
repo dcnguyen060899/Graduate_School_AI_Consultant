@@ -7,9 +7,8 @@ document.addEventListener('DOMContentLoaded', function() {
     function formatMessage(message) {
         const lines = message.split('\n');
         let formattedHTML = '';
-        let currentHeaderLevel = 0;
-        let listLevel = 0;
-        let inList = false;
+        let headerStack = [0];
+        let listStack = [0];
     
         function formatBold(text) {
             return text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
@@ -19,11 +18,10 @@ document.addEventListener('DOMContentLoaded', function() {
             return line.search(/\S|$/) / 2;
         }
     
-        function closeList() {
-            if (inList) {
-                formattedHTML += '</ul>'.repeat(listLevel);
-                inList = false;
-                listLevel = 0;
+        function closeListsToLevel(level) {
+            while (listStack[listStack.length - 1] > level) {
+                formattedHTML += '</ul>';
+                listStack.pop();
             }
         }
     
@@ -32,22 +30,24 @@ document.addEventListener('DOMContentLoaded', function() {
             line = line.trim();
     
             if (line.startsWith('#')) {
-                closeList();
-                currentHeaderLevel = line.split(' ')[0].length;
-                formattedHTML += `<h${currentHeaderLevel}>${formatBold(line.substring(currentHeaderLevel + 1))}</h${currentHeaderLevel}>`;
+                const headerLevel = line.split(' ')[0].length;
+                closeListsToLevel(0);
+                
+                while (headerStack[headerStack.length - 1] >= headerLevel) {
+                    headerStack.pop();
+                }
+                headerStack.push(headerLevel);
+    
+                formattedHTML += `<h${headerLevel}>${formatBold(line.substring(headerLevel + 1))}</h${headerLevel}>`;
             } else if (line.startsWith('- ') || line.startsWith('• ')) {
                 const content = formatBold(line.substring(2));
+                const currentHeaderLevel = headerStack[headerStack.length - 1];
                 
-                if (!inList) {
-                    inList = true;
+                if (indentLevel > listStack[listStack.length - 1]) {
                     formattedHTML += '<ul>';
-                    listLevel = 1;
-                } else if (indentLevel > listLevel) {
-                    formattedHTML += '<ul>';
-                    listLevel++;
-                } else if (indentLevel < listLevel) {
-                    formattedHTML += '</ul>'.repeat(listLevel - indentLevel);
-                    listLevel = indentLevel;
+                    listStack.push(indentLevel);
+                } else {
+                    closeListsToLevel(indentLevel);
                 }
     
                 formattedHTML += `<li>${content}`;
@@ -59,14 +59,14 @@ document.addEventListener('DOMContentLoaded', function() {
                     formattedHTML += '</li>';
                 }
             } else {
-                closeList();
+                closeListsToLevel(0);
                 if (line) {
                     formattedHTML += `<p>${formatBold(line)}</p>`;
                 }
             }
         });
     
-        closeList();
+        closeListsToLevel(0);
     
         return formattedHTML;
     }
