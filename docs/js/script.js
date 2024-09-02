@@ -82,7 +82,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 chatBox.scrollTop = chatBox.scrollHeight;
             }, isWelcome ? 50 : 10); // Slower for welcome message, faster for chatbot responses
         } else {
-            messageElement.textContent = message;
+            messageElement.innerHTML = formatUserMessage(message);
         }
         
         chatBox.scrollTop = chatBox.scrollHeight;
